@@ -308,15 +308,23 @@ p { margin: 0; }
    label above the headline. Logos and wordmark read as one unit. */
 
 .affil {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 16px 26px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 18px 30px;
   margin-top: 34px; padding-top: 26px;
   border-top: 1px solid var(--line);
 }
-.affil__mark { max-height: 52px; max-width: min(310px, 78vw); width: auto; object-fit: contain; flex: none; }
-.affil__primary {
-  font-family: var(--display); font-size: clamp(1.02rem, 1.5vw, 1.24rem);
-  color: var(--ink); letter-spacing: -0.005em;
+.affil__mark {
+  height: 54px; width: auto;
+  max-width: min(320px, 72vw);
+  object-fit: contain; flex: none;
 }
+/* The three marks carry very different aspect ratios, so matching them on
+   height alone leaves the wordier ones looking cramped; a little extra room
+   for the two university marks evens the row out optically. */
+.affil__mark--invert { height: 50px; }
+/* PKU and CFT ship as dark marks on transparency, so they vanish on this
+   ground. Forcing them to white keeps the three lockups reading as a set;
+   the NBIC mark is already a light variant and is left alone. */
+.affil__mark--invert { filter: brightness(0) invert(1); opacity: .92; }
 
 /* ---------- tools ----------
    Four cards, each tagged by what the tool does: see / steer / observe / design.
