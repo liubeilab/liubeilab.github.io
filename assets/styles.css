@@ -35,7 +35,17 @@
   --section-y: clamp(76px, 9vw, 132px);
   --measure:   68ch;
   --maxw:      1180px;
+
+  /* The single content column every full-bleed band aligns to. Sections centre
+     their own .wrap; the header and hero have no wrap, so they use this as
+     inline padding and land on exactly the same edge. */
+  --edge: max(var(--gutter), (100% - var(--maxw)) / 2);
 }
+
+/* A 1180px column strands most of a large monitor. Widen the measure rather
+   than leaving ~700px of dead margin each side. */
+@media (min-width: 1560px) { :root { --maxw: 1320px; } }
+@media (min-width: 1960px) { :root { --maxw: 1440px; } }
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -118,14 +128,19 @@ p { margin: 0; }
 .site-header {
   position: sticky; top: 0; z-index: 40;
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding: 16px var(--gutter);
+  padding: 16px var(--edge);
   background: oklch(0.135 0.028 260 / 0.86);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--line);
 }
 .brand { display: flex; align-items: center; gap: 13px; }
-.brand img { width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 16px oklch(0.84 0.13 195 / 0.30)); }
+/* The lab mark ships as a black PNG on transparency, so on this ground it was
+   all but invisible. Forced to white, like the two university marks. */
+.brand img {
+  width: 42px; height: 42px; object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 0 14px oklch(0.84 0.13 195 / 0.35));
+}
 .brand b { display: block; font-family: var(--display); font-size: 1.02rem; font-weight: 500; letter-spacing: -0.01em; }
 .brand span { display: block; font-size: 0.74rem; color: var(--muted); line-height: 1.3; }
 
@@ -142,7 +157,7 @@ p { margin: 0; }
   position: relative; isolation: isolate; overflow: hidden;
   min-height: 76svh;
   display: grid; align-items: center;    /* centred: bottom-anchoring left a dead field up top */
-  padding: clamp(64px, 8vw, 104px) var(--gutter) clamp(56px, 7vw, 88px);
+  padding: clamp(64px, 8vw, 104px) var(--edge) clamp(56px, 7vw, 88px);
 }
 /* Two layers: a still gradient scrim, and the photograph moving underneath it
    like a stage being walked across at low magnification.
@@ -487,7 +502,10 @@ img.toolfig { object-fit: cover; }
   .grid { --cols: 1 !important; }
   .pi, .band, .alumni, .site-footer .wrap { grid-template-columns: 1fr; }
   .site-footer .wrap { align-items: start; }
-  .site-header { flex-direction: column; align-items: flex-start; gap: 14px; }
+  /* No .site-header rule here. It used to force flex-direction: column, and
+     because this block sits after the 860px one it also won below 860px —
+     which stacked the Menu button under the brand instead of beside it.
+     Between 861 and 920px the header stays a row and the nav simply wraps. */
   .nav { justify-content: flex-start; }
   .pub { grid-template-columns: 1fr; gap: 10px; }
   .pub__year { padding-top: 0; }
@@ -496,6 +514,11 @@ img.toolfig { object-fit: cover; }
 }
 
 @media (max-width: 720px) {
+  /* Three stacked marks at full height ate most of a phone screen. */
+  .affil { gap: 14px; }
+  .affil__mark { height: 40px; }
+  .affil__mark--invert { height: 38px; }
+
   .people { grid-template-columns: 1fr; }
   .person img { aspect-ratio: 4 / 3; }
   .person__body { padding: 24px; }
