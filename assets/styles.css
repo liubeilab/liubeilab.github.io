@@ -78,10 +78,10 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
   max-width: 21ch;
 }
 .h-page, .h-section {
-  font-size: clamp(2.2rem, 4.6vw, 4.1rem);
-  line-height: 1.04;
-  letter-spacing: -0.018em;
-  max-width: 20ch;
+  font-size: clamp(2.1rem, 4.2vw, 3.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.016em;
+  max-width: 26ch;      /* 20ch broke the longer page titles into four stub lines */
 }
 .h-card { font-size: 1.32rem; line-height: 1.25; letter-spacing: -0.008em; }
 
@@ -140,26 +140,37 @@ p { margin: 0; }
 
 .hero {
   position: relative; isolation: isolate; overflow: hidden;
-  min-height: 84svh;
-  display: grid; align-items: end;              /* content sits low — the empty upper field is the point */
-  padding: clamp(96px, 13vw, 148px) var(--gutter) clamp(56px, 8vw, 96px);
+  min-height: 76svh;
+  display: grid; align-items: center;    /* centred: bottom-anchoring left a dead field up top */
+  padding: clamp(64px, 8vw, 104px) var(--gutter) clamp(56px, 7vw, 88px);
 }
+/* Two layers: a still gradient scrim, and the photograph drifting underneath it
+   very slowly. The motion is barely perceptible frame to frame — it just stops
+   the largest element on the page from being completely inert. */
 .hero::before {
-  content: ''; position: absolute; inset: 0; z-index: -2;
-  background:
-    linear-gradient(90deg, oklch(0.135 0.028 260 / 0.96) 0%, oklch(0.135 0.028 260 / 0.78) 38%, oklch(0.135 0.028 260 / 0.24) 72%),
-    var(--hero-image, none) center right / cover no-repeat;
+  content: ''; position: absolute; inset: -3%; z-index: -2;
+  background: var(--hero-image, none) center right / cover no-repeat;
+  animation: hero-drift 44s ease-in-out infinite alternate;
+  will-change: transform;
 }
 .hero::after {
-  content: ''; position: absolute; inset: auto 0 0; height: 36%; z-index: -1;
-  background: linear-gradient(0deg, var(--bg), transparent);
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(90deg, oklch(0.135 0.028 260 / 0.96) 0%, oklch(0.135 0.028 260 / 0.78) 38%, oklch(0.135 0.028 260 / 0.24) 72%),
+    linear-gradient(0deg, var(--bg) 0%, transparent 34%);
+}
+@keyframes hero-drift {
+  from { transform: scale(1) translate3d(0, 0, 0); }
+  to   { transform: scale(1.07) translate3d(-1.2%, -0.8%, 0); }
 }
 .hero__inner { max-width: 780px; }
 .hero__inner > * + * { margin-top: 24px; }
 .hero .lead { font-size: clamp(1.06rem, 1.7vw, 1.3rem); max-width: 58ch; }
 
-.page-hero { padding: clamp(100px, 11vw, 150px) var(--gutter) clamp(54px, 7vw, 90px); }
-.page-hero > * + * { margin-top: 22px; }
+.page-hero { padding: clamp(88px, 9vw, 128px) var(--gutter) clamp(54px, 7vw, 90px); }
+/* The content sits inside .wrap, so a direct-child selector here matched
+   nothing and every subpage title ran straight into its lead paragraph. */
+.page-hero .wrap > * + * { margin-top: 20px; }
 
 /* ---------- buttons ---------- */
 
@@ -289,6 +300,21 @@ p { margin: 0; }
 .site-footer a { color: var(--muted); }
 .site-footer a:hover { color: var(--accent); }
 
+/* ---------- scroll reveal ----------
+   Applied by JS only, so the page is fully readable with scripting off; the
+   class never lands and nothing is ever left invisible. Reduced-motion users
+   get the end state immediately (see nav.js). */
+
+.reveal { opacity: 0; transform: translateY(18px); }
+.reveal.is-in {
+  opacity: 1; transform: none;
+  transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .3, 1);
+}
+/* The section head leads, its content follows a beat later. */
+.reveal.is-in { transition-delay: 0ms; }
+.section__head.reveal.is-in { transition-delay: 0ms; }
+.tools.reveal.is-in, .topics.reveal.is-in, .grid.reveal.is-in { transition-delay: 90ms; }
+
 /* ---------- async states ---------- */
 
 [data-loading] { position: relative; min-height: 120px; }
@@ -330,21 +356,34 @@ p { margin: 0; }
    Four cards, each tagged by what the tool does: see / steer / observe / design.
    The tag is the point — biosensors read state, optogenetics writes it. */
 
-.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; border: 1px solid var(--line); background: var(--line); }
-.tool {
-  background: linear-gradient(180deg, oklch(0.200 0.030 260 / 0.96), oklch(0.160 0.028 260 / 0.98));
-  padding: 0; display: flex; flex-direction: column;
+/* Separate cards with real gaps rather than a 1px hairline lattice — the
+   lattice read as a table and left the copy feeling boxed in. The second
+   column drops half a step so the four don't line up like a spreadsheet. */
+.tools {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 2.4vw, 30px);
+  padding-bottom: 28px;   /* room for the staggered column below */
 }
+.tool {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+  background: linear-gradient(180deg, oklch(0.200 0.030 260 / 0.96), oklch(0.160 0.028 260 / 0.98));
+  transition: border-color .35s ease, transform .35s ease;
+}
+.tool:nth-child(even) { transform: translateY(28px); }
+.tool:hover { border-color: var(--line-strong); }
+
 .toolfig {
   display: block; width: 100%; height: auto; aspect-ratio: 3 / 2;
   background: oklch(0.115 0.028 260);
   border-bottom: 1px solid var(--line);
   color: var(--accent);
+  transition: transform .7s cubic-bezier(.2, .7, .3, 1);
 }
-/* Rendered illustrations are already 3:2 and already dark-ground, so they sit
-   flush in the same frame the schematics use. */
 img.toolfig { object-fit: cover; }
-.tool__body { padding: 26px 30px 30px; display: flex; flex-direction: column; gap: 11px; }
+.tool:hover .toolfig { transform: scale(1.035); }
+
+.tool__body { padding: 30px 34px 34px; display: flex; flex-direction: column; gap: 13px; }
 .tool__tag {
   font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em;
   text-transform: uppercase; color: var(--accent);
@@ -425,6 +464,8 @@ img.toolfig { object-fit: cover; }
 
 @media (max-width: 920px) {
   .recent, .two-col, .flow, .tools { grid-template-columns: 1fr; }
+  .tools { padding-bottom: 0; }
+  .tool:nth-child(even) { transform: none; }   /* stagger only makes sense in two columns */
   .story { grid-template-columns: 1fr; }
   .story:nth-of-type(even) img { order: 0; }
   .affil { flex-direction: column; align-items: flex-start; gap: 18px; }

@@ -33,3 +33,36 @@
     if (mq.matches) setOpen(false);
   });
 })();
+
+/* Scroll reveal. The .reveal class is added here rather than in the markup, so
+   a browser without JS never hides anything. */
+(function () {
+  var targets = document.querySelectorAll(
+    '.section__head, .tools, .topics, .grid, .story, .pub-list, .people, .alumni, .posts, .band, .flow, .pi, .two-col, #resources'
+  );
+  if (!targets.length) return;
+
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (still.matches || !('IntersectionObserver' in window)) return;
+
+  Array.prototype.forEach.call(targets, function (el) { el.classList.add('reveal'); });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('is-in');
+      io.unobserve(e.target);          // reveal once; re-animating on every pass is noise
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.06 });
+
+  Array.prototype.forEach.call(targets, function (el) { io.observe(el); });
+
+  /* Anything already on screen at load reveals on the next frame, so the first
+     view animates in rather than appearing pre-finished. */
+  requestAnimationFrame(function () {
+    Array.prototype.forEach.call(targets, function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) { el.classList.add('is-in'); io.unobserve(el); }
+    });
+  });
+})();
