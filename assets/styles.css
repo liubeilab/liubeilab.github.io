@@ -336,11 +336,14 @@ p { margin: 0; }
   padding: 0; display: flex; flex-direction: column;
 }
 .toolfig {
-  display: block; width: 100%; height: auto; aspect-ratio: 8 / 5;
+  display: block; width: 100%; height: auto; aspect-ratio: 3 / 2;
   background: oklch(0.115 0.028 260);
   border-bottom: 1px solid var(--line);
   color: var(--accent);
 }
+/* Rendered illustrations are already 3:2 and already dark-ground, so they sit
+   flush in the same frame the schematics use. */
+img.toolfig { object-fit: cover; }
 .tool__body { padding: 26px 30px 30px; display: flex; flex-direction: column; gap: 11px; }
 .tool__tag {
   font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em;
