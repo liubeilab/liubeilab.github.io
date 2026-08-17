@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Liu Lab — Decoding Dynamic States of Living Systems</title>
+<meta name="description" content="Liu Lab at the National Biomedical Imaging Center, Peking University, builds molecular, imaging and computational tools to observe living biology with greater precision." />
+<link rel="canonical" href="https://www.liubeilab.com/" />
+<meta property="og:title" content="Liu Lab — Decoding Dynamic States of Living Systems" />
+<meta property="og:description" content="Liu Lab at the National Biomedical Imaging Center, Peking University, builds molecular, imaging and computational tools to observe living biology with greater precision." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="/assets/img/mark.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/assets/styles.css" />
+<style>.hero { --hero-image: url('/assets/img/hero-microscopy.jpg'); }</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label="Liu Lab home">
+    <img src="/assets/img/mark.png" alt="" />
+    <span><b>Liu Lab</b>Peking University</span>
+  </a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+  <nav class="nav" id="primary-nav" aria-label="Primary">
+    <a href="/" aria-current="page">Home</a>
+    <a href="/research/">Vision/Research</a>
+    <a href="/technologies/">Technologies</a>
+    <a href="/open-science/">Open Science</a>
+    <a href="/publications/">Publications</a>
+    <a href="/people/">People</a>
+    <a href="/join-us/">Join Us</a>
+    <a href="/news/">News</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="hero__inner">
+      <p class="eyebrow">National Biomedical Imaging Center · Peking University</p>
+      <h1 class="h-hero">Decoding dynamic states of living systems.</h1>
+      <p class="lead">We build molecular, imaging and computational tools to observe living biology with greater spatial, temporal, molecular and quantitative precision.</p>
+      <div class="btns">
+        <a class="btn btn--primary" href="/research/">Explore research</a>
+        <a class="btn" href="/join-us/">Join the lab</a>
+      </div>
+      <div class="logos">
+        <img src="/assets/img/pku.png" alt="Peking University" />
+        <img src="/assets/img/nbic.png" alt="National Biomedical Imaging Center" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="eyebrow">What we work on</p>
+        <h2 class="h-section">Four questions, one toolkit</h2>
+      </div>
+      <ul class="topics">
+        <li><a href="/research/#immune"><b>Immune cell signalling</b><span>Macrophage podosomes to immune synapses</span></a></li>
+        <li><a href="/research/#neuronal"><b>Neuronal nuclear states</b><span>Activation, phosphorylation and condensates</span></a></li>
+        <li><a href="/research/#mechano"><b>Mechanobiology</b><span>How force becomes molecular signal</span></a></li>
+        <li><a href="/research/#protein"><b>AI-based protein design</b><span>Designed biosensors, actuators and binders</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap recent">
+      <div>
+        <p class="eyebrow">Latest paper</p>
+        <div id="latest-pub" data-loading></div>
+        <p style="margin-top:22px"><a class="btn" href="/publications/">All publications</a></p>
+      </div>
+      <div>
+        <p class="eyebrow">From the lab</p>
+        <div id="latest-post" data-loading></div>
+        <p style="margin-top:22px"><a class="btn" href="/news/">More news</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="band">
+        <div>
+          <p class="eyebrow">Join Liu Lab</p>
+          <h2 class="h-section">We welcome curious scientists and tool builders.</h2>
+        </div>
+        <div>
+          <div class="btns"><a class="btn btn--primary" href="/join-us/">Open positions</a></div>
+          <p class="meta" style="margin-top:14px"><a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <b>Liu Lab</b>
+      <p class="meta" style="margin-top:10px">National Biomedical Imaging Center<br />College of Future Technology<br />Peking University</p>
+      <p class="meta" style="margin-top:10px"><a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a> · <a href="https://github.com/drbeiliu" target="_blank" rel="noopener">GitHub</a></p>
+    </div>
+    <div class="logos">
+      <img src="/assets/img/pku.png" alt="Peking University" />
+      <img src="/assets/img/nbic.png" alt="National Biomedical Imaging Center" />
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/nav.js"></script>
+<script type="module">
+import { getPublications, getPosts, hydrate, formatDate, esc } from '/assets/wix.js';
+hydrate(document.getElementById('latest-pub'),
+  async () => (await getPublications()).filter(p => p.featured).slice(0, 1),
+  ([p]) => `<h3 class="pub__title" style="font-size:1.34rem">${esc(p.title)}</h3>
+    <p class="pub__authors" style="margin-top:8px">${esc(p.authors)}</p>
+    <p class="pub__journal">${esc(p.journal)}</p>
+    ${p.doi ? `<a class="pub__doi" href="https://doi.org/${esc(p.doi)}" target="_blank" rel="noopener">${esc(p.doi)}</a>` : ''}`);
+hydrate(document.getElementById('latest-post'),
+  async () => (await getPosts(4)).slice(0, 1),
+  ([p]) => `<p class="meta">${esc(formatDate(p.date))}</p>
+    <h3 class="pub__title" style="font-size:1.34rem;margin-top:8px">${esc(p.title)}</h3>
+    ${p.excerpt ? `<p class="body" style="margin-top:8px">${esc(p.excerpt)}</p>` : ''}
+    <a class="pub__doi" href="${esc(p.url)}" target="_blank" rel="noopener">Read the post</a>`);
+</script>
+</body>
+</html>

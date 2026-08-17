@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>News | Liu Lab</title>
+<meta name="description" content="Lab life, milestones and updates from Liu Lab at Peking University." />
+<link rel="canonical" href="https://www.liubeilab.com/news/" />
+<meta property="og:title" content="News | Liu Lab" />
+<meta property="og:description" content="Lab life, milestones and updates from Liu Lab at Peking University." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="/assets/img/mark.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label="Liu Lab home">
+    <img src="/assets/img/mark.png" alt="" />
+    <span><b>Liu Lab</b>Peking University</span>
+  </a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+  <nav class="nav" id="primary-nav" aria-label="Primary">
+    <a href="/">Home</a>
+    <a href="/research/">Vision/Research</a>
+    <a href="/technologies/">Technologies</a>
+    <a href="/open-science/">Open Science</a>
+    <a href="/publications/">Publications</a>
+    <a href="/people/">People</a>
+    <a href="/join-us/">Join Us</a>
+    <a href="/news/" aria-current="page">News</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">News</p>
+      <h1 class="h-page">From the lab.</h1>
+      <p class="lead">Trips, milestones, new instruments and the occasional hotpot.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap"><div class="posts" id="posts" data-loading></div></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <b>Liu Lab</b>
+      <p class="meta" style="margin-top:10px">National Biomedical Imaging Center<br />College of Future Technology<br />Peking University</p>
+      <p class="meta" style="margin-top:10px"><a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a> · <a href="https://github.com/drbeiliu" target="_blank" rel="noopener">GitHub</a></p>
+    </div>
+    <div class="logos">
+      <img src="/assets/img/pku.png" alt="Peking University" />
+      <img src="/assets/img/nbic.png" alt="National Biomedical Imaging Center" />
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/nav.js"></script>
+<script type="module">
+import { getPosts, hydrate, wixImage, formatDate, esc } from '/assets/wix.js';
+hydrate(document.getElementById('posts'), () => getPosts(50), posts => posts.map(p => `
+  <a class="post" href="${esc(p.url)}" target="_blank" rel="noopener">
+    ${p.cover ? `<img src="${esc(wixImage(p.cover, 720, 450))}" alt="" loading="lazy" />` : ''}
+    <div class="post__body">
+      <p class="meta">${esc(formatDate(p.date))}</p>
+      <h2 class="post__title">${esc(p.title)}</h2>
+      ${p.excerpt ? `<p>${esc(p.excerpt)}</p>` : ''}
+    </div>
+  </a>`).join(''));
+</script>
+</body>
+</html>

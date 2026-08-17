@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>People | Liu Lab</title>
+<meta name="description" content="The Liu Lab team at the College of Future Technology and National Biomedical Imaging Center, Peking University." />
+<link rel="canonical" href="https://www.liubeilab.com/people/" />
+<meta property="og:title" content="People | Liu Lab" />
+<meta property="og:description" content="The Liu Lab team at the College of Future Technology and National Biomedical Imaging Center, Peking University." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="/assets/img/mark.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label="Liu Lab home">
+    <img src="/assets/img/mark.png" alt="" />
+    <span><b>Liu Lab</b>Peking University</span>
+  </a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+  <nav class="nav" id="primary-nav" aria-label="Primary">
+    <a href="/">Home</a>
+    <a href="/research/">Vision/Research</a>
+    <a href="/technologies/">Technologies</a>
+    <a href="/open-science/">Open Science</a>
+    <a href="/publications/">Publications</a>
+    <a href="/people/" aria-current="page">People</a>
+    <a href="/join-us/">Join Us</a>
+    <a href="/news/">News</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">People</p>
+      <h1 class="h-page">A collaborative team at the interface of biology, engineering and computation.</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap"><div id="pi" data-loading></div></div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="eyebrow">Current members</p>
+        <h2 class="h-section">Our team</h2>
+      </div>
+      <div class="people" id="members" data-loading></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="eyebrow">Alumni</p>
+        <h2 class="h-section">Former lab members</h2>
+      </div>
+      <div class="alumni" id="alumni" data-loading></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <b>Liu Lab</b>
+      <p class="meta" style="margin-top:10px">National Biomedical Imaging Center<br />College of Future Technology<br />Peking University</p>
+      <p class="meta" style="margin-top:10px"><a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a> · <a href="https://github.com/drbeiliu" target="_blank" rel="noopener">GitHub</a></p>
+    </div>
+    <div class="logos">
+      <img src="/assets/img/pku.png" alt="Peking University" />
+      <img src="/assets/img/nbic.png" alt="National Biomedical Imaging Center" />
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/nav.js"></script>
+<script type="module">
+import { getTeam, getAlumni, hydrate, wixImage, esc } from '/assets/wix.js';
+hydrate(document.getElementById('pi'), async () => (await getTeam()).slice(0, 1), ([p]) => `
+  <div class="pi">
+    <img src="${esc(wixImage(p.photo, 560, 700))}" alt="${esc(p.nameEn)}" />
+    <div class="pi__body">
+      <p class="pi__zh">${esc(p.nameZh)}</p>
+      <h2 class="h-section" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">${esc(p.nameEn)}, Ph.D.</h2>
+      <p class="meta">${esc(p.role)}</p>
+      <p class="body">${esc(p.bio)}</p>
+      <p class="meta"><a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a></p>
+    </div>
+  </div>`);
+hydrate(document.getElementById('members'), async () => (await getTeam()).slice(1), rows => rows.map(m => `
+  <article class="person">
+    <img src="${esc(wixImage(m.photo, 620, 465))}" alt="${esc(m.nameEn)}" loading="lazy" />
+    <div class="person__body">
+      <h3 class="person__name">${esc(m.nameZh)}</h3>
+      <p class="person__en">${esc(m.nameEn)}</p>
+      <p class="person__role">${esc(m.role)}</p>
+      <p>${esc(m.bio)}</p>
+    </div>
+  </article>`).join(''));
+hydrate(document.getElementById('alumni'), getAlumni, rows => rows.map(a => `
+  <article class="alumnus">
+    <img src="${esc(wixImage(a.photo, 200, 200))}" alt="" loading="lazy" />
+    <div><b>${esc(a.nameZh)}</b><span class="meta">${esc(a.years)}</span></div>
+  </article>`).join(''));
+</script>
+</body>
+</html>
