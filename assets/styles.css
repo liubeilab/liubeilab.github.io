@@ -308,18 +308,15 @@ p { margin: 0; }
    label above the headline. Logos and wordmark read as one unit. */
 
 .affil {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px 26px;
   margin-top: 34px; padding-top: 26px;
   border-top: 1px solid var(--line);
 }
-.affil__logos { display: flex; align-items: center; gap: 22px; flex: none; }
-.affil__logos img { max-height: 46px; max-width: 176px; object-fit: contain; filter: brightness(1.12); }
-.affil__text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.affil__mark { max-height: 52px; max-width: min(310px, 78vw); width: auto; object-fit: contain; flex: none; }
 .affil__primary {
   font-family: var(--display); font-size: clamp(1.02rem, 1.5vw, 1.24rem);
   color: var(--ink); letter-spacing: -0.005em;
 }
-.affil__secondary { font-size: 0.9rem; color: var(--muted); }
 
 /* ---------- tools ----------
    Four cards, each tagged by what the tool does: see / steer / observe / design.
