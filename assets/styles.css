@@ -134,15 +134,10 @@ p { margin: 0; }
   -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--line);
 }
-.brand { display: flex; align-items: center; gap: 13px; }
-/* The lab mark ships as a black PNG on transparency, so on this ground it was
-   all but invisible. Forced to white, like the two university marks. */
-.brand img {
-  width: 42px; height: 42px; object-fit: contain;
-  filter: brightness(0) invert(1) drop-shadow(0 0 14px oklch(0.84 0.13 195 / 0.35));
-}
-.brand b { display: block; font-family: var(--display); font-size: 1.02rem; font-weight: 500; letter-spacing: -0.01em; }
-.brand span { display: block; font-size: 0.74rem; color: var(--muted); line-height: 1.3; }
+.brand { display: flex; align-items: center; }
+/* The new lockup carries the wordmark itself, so there is no text beside it,
+   and its ink was pre-lightened for this ground, so no filter either. */
+.brand img { height: 42px; width: auto; display: block; }
 
 .nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 20px; font-size: 0.875rem; color: var(--muted); }
 .nav a { padding: 5px 0; border-bottom: 1px solid transparent; transition: color .15s, border-color .15s; }
@@ -168,8 +163,17 @@ p { margin: 0; }
    rather than as movement. A fixed-scale translation is a pure compositor
    transform: no resampling, no jitter. */
 .hero::before {
-  content: ''; position: absolute; inset: -8%; z-index: -2;
-  background: var(--hero-image, none) center center / cover no-repeat;
+  content: ''; position: absolute; z-index: -2;
+  top: -8%; bottom: -8%; right: -8%;
+  /* Capped, not stretched. The hero source is only 1536px wide, so letting it
+     cover a 3440px viewport meant a 2.6x upscale and a visibly soft image.
+     Capping the layer holds the upscale near 1.2x at any width; beyond the cap
+     the ground simply continues, and the mask fades the image's own left edge
+     in so there is no seam. */
+  width: min(116%, 1900px);
+  background: var(--hero-image, none) center right / cover no-repeat;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 24%);
   animation: hero-pan 96s ease-in-out infinite;
   will-change: transform;
   backface-visibility: hidden;

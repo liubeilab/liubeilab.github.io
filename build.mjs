@@ -43,8 +43,7 @@ const shell = ({ key, path, title, desc, body, script = '', heroCss = '' }) => `
 
 <header class="site-header">
   <a class="brand" href="/" aria-label="Liu Lab home">
-    <img src="/assets/img/mark.png" alt="" />
-    <span><b>Liu Lab</b>Peking University</span>
+    <img src="/assets/img/logo.png" alt="Liu Lab" />
   </a>
   <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button>
   <nav class="nav" id="primary-nav" aria-label="Primary">
