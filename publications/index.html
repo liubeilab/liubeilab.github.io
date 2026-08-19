@@ -48,6 +48,7 @@
 
   <section class="section">
     <div class="wrap">
+      <p class="pub-summary meta" id="pub-summary"></p>
       <div class="pub-list" id="pubs" data-loading></div>
     </div>
   </section>
@@ -71,16 +72,36 @@
 <script src="/assets/nav.js"></script>
 <script type="module">
 import { getPublications, hydrate, esc } from '/assets/wix.js';
-hydrate(document.getElementById('pubs'), getPublications, pubs => pubs.map(p => `
+const entry = p => `
   <article class="pub"${p.featured ? ' data-featured' : ''}>
-    <div class="pub__year">${esc(p.year)}<span class="pub__n">${esc(p.idx)}</span></div>
+    <div class="pub__n">${esc(p.idx)}</div>
     <div>
-      <h2 class="pub__title">${esc(p.title)}</h2>
+      <h3 class="pub__title">${esc(p.title)}</h3>
       <p class="pub__authors">${esc(p.authors)}</p>
       <p class="pub__journal">${esc(p.journal)}</p>
       ${p.doi ? `<a class="pub__doi" href="https://doi.org/${esc(p.doi)}" target="_blank" rel="noopener">${esc(p.doi)}</a>` : ''}
     </div>
-  </article>`).join(''));
+  </article>`;
+
+hydrate(document.getElementById('pubs'), getPublications, pubs => {
+  const summary = document.getElementById('pub-summary');
+  if (summary && pubs.length) {
+    const years = pubs.map(p => Number(p.year)).filter(Boolean);
+    summary.textContent = pubs.length + ' publications · ' + Math.min(...years) + '–' + Math.max(...years);
+  }
+  // group consecutively: the list already arrives sorted newest first
+  const groups = [];
+  for (const p of pubs) {
+    const last = groups[groups.length - 1];
+    if (last && last.year === p.year) last.items.push(p);
+    else groups.push({ year: p.year, items: [p] });
+  }
+  return groups.map(g => `
+    <section class="pub-year">
+      <h2 class="pub-year__label">${esc(g.year)}</h2>
+      ${g.items.map(entry).join('')}
+    </section>`).join('');
+});
 </script>
 </body>
 </html>

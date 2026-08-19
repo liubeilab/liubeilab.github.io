@@ -252,21 +252,33 @@ p { margin: 0; }
 
 /* ---------- publications ---------- */
 
-.pub-list { border-top: 1px solid var(--line); max-width: 1080px; }
-.pub {
-  display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 26px;
-  padding: 26px 0; border-bottom: 1px solid var(--line);
+.pub-summary { margin-bottom: 30px; }
+.pub-list { max-width: 1080px; }
+
+/* Grouped by year: with 21 entries a flat list is hard to scan, and the year
+   printed on every row was repeating itself. It now heads the group instead. */
+.pub-year { margin-bottom: clamp(30px, 4vw, 48px); }
+.pub-year__label {
+  font-family: var(--mono); font-size: 0.86rem; font-weight: 500;
+  letter-spacing: 0.12em; color: var(--accent);
+  padding-bottom: 12px; border-bottom: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
 }
-.pub__year { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); font-variant-numeric: tabular-nums; padding-top: 3px; }
+.pub {
+  display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 22px;
+  padding: 24px 0; border-bottom: 1px solid var(--line);
+}
+.pub:last-child { border-bottom: 0; }
+.pub__n { font-family: var(--mono); font-size: 0.8rem; color: var(--dim); font-variant-numeric: tabular-nums; padding-top: 4px; }
 .pub__title { font-family: var(--display); font-size: 1.16rem; line-height: 1.36; margin-bottom: 7px; }
 .pub__authors { color: var(--muted); font-size: 0.94rem; line-height: 1.6; }
 .pub__journal { color: var(--dim); font-size: 0.94rem; font-style: italic; }
 .pub__doi { display: inline-block; margin-top: 9px; font-family: var(--mono); font-size: 0.78rem; color: var(--accent); }
 .pub__doi:hover { text-decoration: underline; text-underline-offset: 3px; }
 .pub[data-featured] .pub__title { color: var(--ink); }
-.pub[data-featured] .pub__year::after {
-  content: 'selected'; display: block; margin-top: 6px;
-  font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent);
+.pub[data-featured] .pub__n::after {
+  content: 'selected'; display: block; margin-top: 8px;
+  font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
 }
 
 /* ---------- people ---------- */
@@ -511,10 +523,9 @@ img.toolfig { object-fit: cover; }
      which stacked the Menu button under the brand instead of beside it.
      Between 861 and 920px the header stays a row and the nav simply wraps. */
   .nav { justify-content: flex-start; }
-  .pub { grid-template-columns: 1fr; gap: 10px; }
-  .pub__year { padding-top: 0; }
-  .pub[data-featured] .pub__year { display: flex; gap: 12px; align-items: baseline; }
-  .pub[data-featured] .pub__year::after { margin-top: 0; }
+  .pub { grid-template-columns: 1fr; gap: 8px; }
+  .pub__n { padding-top: 0; display: flex; gap: 12px; align-items: baseline; }
+  .pub[data-featured] .pub__n::after { margin-top: 0; }
 }
 
 @media (max-width: 720px) {
