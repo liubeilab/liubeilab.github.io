@@ -616,9 +616,10 @@ for (const p of pages) {
   writeFileSync(target, shell(p), 'utf8');
   console.log(`  ${p.file.padEnd(28)} ${p.path}`);
 }
-/* No CNAME yet. Committing one makes GitHub Pages switch to the custom domain
-   immediately, and the site then 404s until DNS is pointed — which would block
-   review. It gets added at cutover, not before. */
+/* Cutover done: the custom domain is live, so CNAME is emitted with every
+   build. Removing this file would send the site back to liubeilab.github.io. */
+writeFileSync(join(OUT, 'CNAME'), 'www.liubeilab.com
+', 'utf8');
 writeFileSync(join(OUT, '.nojekyll'), '', 'utf8');
 
 /* Sitemap + robots. The canonical host is the Wix domain this site is about to
