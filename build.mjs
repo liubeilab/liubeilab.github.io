@@ -618,8 +618,7 @@ for (const p of pages) {
 }
 /* Cutover done: the custom domain is live, so CNAME is emitted with every
    build. Removing this file would send the site back to liubeilab.github.io. */
-writeFileSync(join(OUT, 'CNAME'), 'www.liubeilab.com
-', 'utf8');
+writeFileSync(join(OUT, 'CNAME'), 'www.liubeilab.com\n', 'utf8');
 writeFileSync(join(OUT, '.nojekyll'), '', 'utf8');
 
 /* Sitemap + robots. The canonical host is the Wix domain this site is about to
@@ -661,6 +660,6 @@ writeFileSync(join(OUT, '404.html'), shell({
 }), 'utf8');
 
 console.log(`\n${pages.length} pages + 404, sitemap.xml, robots.txt, .nojekyll written.`);
-console.log('CNAME deliberately omitted until the domain cutover.');
+console.log('CNAME: www.liubeilab.com');
 
 
