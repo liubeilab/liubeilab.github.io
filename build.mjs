@@ -479,7 +479,7 @@ pages.push({
 import { getTeam, getAlumni, hydrate, wixImage, esc } from '/assets/wix.js';
 hydrate(document.getElementById('pi'), async () => (await getTeam()).slice(0, 1), ([p]) => \`
   <div class="pi">
-    <img src="\${esc(wixImage(p.photo, 560, 700))}" alt="\${esc(p.nameEn)}" />
+    <img src="\${esc(wixImage(p.photo, 760, 980, 'fit'))}" alt="\${esc(p.nameEn)}" />
     <div class="pi__body">
       <p class="pi__zh">\${esc(p.nameZh)}</p>
       <h2 class="h-section" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">\${esc(p.nameEn)}, Ph.D.</h2>
