@@ -474,6 +474,18 @@ img.toolfig { object-fit: cover; }
 .story > div > * + * { margin-top: 14px; }
 .h-story { font-family: var(--display); font-size: clamp(1.5rem, 2.4vw, 2.1rem); line-height: 1.22; }
 
+/* A full-bleed figure between sections. It reads as an image rather than as
+   chrome, which is why it carries no text: this montage is far more saturated
+   than the site's single-accent palette, and behind a headline it would both
+   fight the type and lose the cell morphology that makes it worth showing. */
+.band-figure { margin: 0; }
+.band-figure img {
+  width: 100%; height: clamp(240px, 30vw, 420px);
+  object-fit: cover; display: block;
+  border-block: 1px solid var(--line);
+}
+.band-figure figcaption { padding: 14px var(--edge) 0; }
+
 /* Technologies: a genuine sequence, so numbering is meaningful here */
 .flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 .flow li { position: relative; padding: 26px; border: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; gap: 10px; }

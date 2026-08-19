@@ -247,6 +247,11 @@ pages.push({
     </div>
   </section>
 
+  <figure class="band-figure">
+    <img src="/assets/img/cell-multiplexing.jpg" alt="A wide field of individually segmented cells, each rendered in a different colour against a black background" loading="lazy" />
+    <figcaption class="meta">Single cells segmented from one imaging field, each given its own colour.</figcaption>
+  </figure>
+
   <section class="section">
     <div class="wrap">
       <div class="section__head">

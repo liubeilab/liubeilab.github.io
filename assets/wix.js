@@ -76,6 +76,10 @@ export async function getPosts(limit = 30) {
    rather than shipping a 2000px original into a 300px slot. */
 export function wixImage(url, w, h, fit = 'fill') {
   if (!url) return null;
+  // Only Wix's CDN understands these transform segments. A photo hosted
+  // anywhere else — including on this site — is returned untouched, otherwise
+  // the transform is appended to a URL that cannot serve it and the image 404s.
+  if (!/(^|\.)wixstatic\.com\//.test(url)) return url;
   const base = url.split('/v1/')[0];
   return `${base}/v1/${fit}/w_${w},h_${h},al_c,q_82,enc_auto/img.jpg`;
 }
