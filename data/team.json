@@ -60,7 +60,7 @@
     "nameEn": "Meilin Li",
     "nameZh": "李美霖",
     "role": "PhD Student",
-    "bio": "Meilin joined the lab in 2024.",
+    "bio": "Meilin joined the lab in 2024 and works on single-molecule imaging with event sensors and frequency-domain FLIM.",
     "photo": "/assets/img/people/meilin-li.jpg"
   },
   {
@@ -68,15 +68,15 @@
     "nameEn": "Xinwei Chen",
     "nameZh": "陈欣玮",
     "role": "Undergraduate",
-    "bio": "Xinwei studies Biomedical Engineering and develops imaging techniques for advanced biosensor imaging.",
+    "bio": "Xinwei studies Biomedical Engineering and works on fluorescence imaging at molecular-scale resolution, such as ROSE.",
     "photo": "/assets/img/people/xinwei-chen.jpg"
   },
   {
     "sortOrder": 90,
     "nameEn": "Qianwen Jin",
     "nameZh": "靳茜雯",
-    "role": "Incoming PhD Student",
-    "bio": "Qianwen will join as a PhD student in 2025 and is interested in protein-directed evolution.",
+    "role": "PhD Student",
+    "bio": "Qianwen joined as a PhD student in 2025 and builds molecular tension biosensors with FLIM readout.",
     "photo": "/assets/img/people/qianwen-jin.jpg"
   },
   {
@@ -88,19 +88,11 @@
     "photo": "/assets/img/people/yuan-yao.jpg"
   },
   {
-    "sortOrder": 110,
-    "nameEn": "Shenyi Lu",
-    "nameZh": "鲁申怡",
-    "role": "Undergraduate",
-    "bio": "Shenyi is a sophomore majoring in Life Sciences.",
-    "photo": "/assets/img/people/shenyi-lu.jpg"
-  },
-  {
     "sortOrder": 120,
     "nameEn": "Lukai Lin",
     "nameZh": "林路凯",
     "role": "Undergraduate",
-    "bio": "Lukai is a sophomore studying Bioinformatics at the School of Life Sciences.",
+    "bio": "Lukai joined in fall 2026, studies Bioinformatics at the School of Life Sciences, and works on AI-driven protein dynamics prediction and de novo protein design.",
     "photo": "/assets/img/people/lukai-lin.jpg"
   }
 ]
