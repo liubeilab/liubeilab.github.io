@@ -619,3 +619,32 @@ img.toolfig { object-fit: cover; }
   .timeline.tl-ready .tl-item { opacity: 1; transform: none; transition: none; }
   .timeline::after { transition: none; }
 }
+
+/* ---- Photo stack (multi-photo posts): a pile you fan through on hover ---- */
+.photo-stack { display: flex; justify-content: center; align-items: flex-start; margin: 8px 0 12px; padding: 6px 0; }
+.photo-stack__item {
+  position: relative; flex: 0 0 auto; width: min(58%, 430px); margin-left: -16%;
+  border: 1px solid var(--line); background: var(--panel); overflow: hidden;
+  box-shadow: 0 16px 34px -20px rgba(0,0,0,.85);
+  transform: rotate(var(--r, 0deg)); transform-origin: center bottom;
+  transition: transform .45s cubic-bezier(.22,.61,.36,1), box-shadow .3s ease;
+}
+.photo-stack__item:first-child { margin-left: 0; }
+.photo-stack__item img { width: 100%; height: auto; display: block; }
+/* a scattered pile */
+.photo-stack__item:nth-child(odd)  { --r: -3deg; }
+.photo-stack__item:nth-child(even) { --r: 3.5deg; }
+.photo-stack__item:nth-child(3n)   { --r: -1.5deg; }
+/* settle the pile straight when the reader engages with it */
+.photo-stack:hover .photo-stack__item { --r: 0deg; }
+/* the photo under the cursor lifts clear of the rest */
+.photo-stack__item:hover { transform: translateY(-14px) scale(1.06); z-index: 20; box-shadow: 0 28px 52px -22px rgba(0,0,0,.9); }
+.photo-stack__hint { text-align: center; margin: 0 0 30px; opacity: .8; }
+
+@media (hover: none) { .photo-stack__hint { display: none; } }
+@media (max-width: 720px) {
+  .photo-stack { flex-direction: column; align-items: stretch; margin-bottom: 8px; }
+  .photo-stack__item { width: 100%; margin: 0 0 14px; transform: none; }
+  .photo-stack__item:hover { transform: none; }
+  .photo-stack__hint { display: none; }
+}

@@ -67,14 +67,14 @@ function inline(s) {
   s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
   return s;
 }
-function markdown(src, { skipImage = '' } = {}) {
+function markdown(src, { skipImage = '', dropImages = false } = {}) {
   const blocks = src.trim().split(/\n{2,}/).map((b) => b.trim()).filter(Boolean);
   const out = [];
   for (const block of blocks) {
     const lines = block.split('\n');
     const imgs = lines.every((l) => IMG.test(l.trim())) ? lines.map((l) => l.trim().match(IMG)) : null;
     if (imgs) {
-      const kept = imgs.filter((m) => m[2] !== skipImage);
+      const kept = dropImages ? [] : imgs.filter((m) => m[2] !== skipImage);
       if (!kept.length) continue;
       const figs = kept.map(([, alt, src]) =>
         `<figure class="post-fig"><img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" /></figure>`).join('');
@@ -710,6 +710,21 @@ pages.push({
 
 /* --- One page per news post --- */
 for (const p of posts) {
+  /* Gather every image on the post (cover + any in the body). With more than
+     one, show them as an interactive stack (fan out / lift on hover) instead of
+     a single lead image; the body text then renders without inline images. */
+  const bodyImgs = [...p.body.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1].trim());
+  const gallery = [...new Set([p.cover, ...bodyImgs].filter(Boolean))];
+  const media = gallery.length > 1
+    ? `<div class="photo-stack" data-count="${gallery.length}">
+        ${gallery.map((src) => `<figure class="photo-stack__item"><img src="${esc(src)}" alt="" loading="lazy" /></figure>`).join('')}
+      </div>
+      <p class="photo-stack__hint meta">Hover a photo to bring it forward</p>`
+    : (p.cover ? `<figure class="post-fig post-fig--lead"><img src="${esc(p.cover)}" alt="" /></figure>` : '');
+  const text = gallery.length > 1
+    ? markdown(p.body, { dropImages: true })
+    : markdown(p.body, { skipImage: p.cover });
+
   pages.push({
     key: 'news', path: `/news/${p.slug}/`, file: `news/${p.slug}/index.html`,
     title: `${p.title} | Liu Lab`,
@@ -725,8 +740,8 @@ for (const p of posts) {
 
   <section class="section">
     <div class="wrap post-article">
-      ${p.cover ? `<figure class="post-fig post-fig--lead"><img src="${esc(p.cover)}" alt="" /></figure>` : ''}
-      ${markdown(p.body, { skipImage: p.cover })}
+      ${media}
+      ${text}
       <p style="margin-top:36px"><a class="btn" href="/news/">← All news</a></p>
     </div>
   </section>`,
