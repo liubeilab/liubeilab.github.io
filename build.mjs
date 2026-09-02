@@ -191,20 +191,27 @@ const postCard = (p) => `
     </div>
   </a>`;
 
-/* One event on the news timeline. Reveal + progress-line motion are handled by
-   assets/timeline.js; without it the items simply show as a static list. */
-const timelineItem = (p) => `
+/* One event on the news timeline. Everything lives here — every photo and the
+   full text — so there is nothing to click through to. Reveal + progress-line
+   motion are handled by assets/timeline.js; without it the items simply show as
+   a static list. */
+const timelineItem = (p) => {
+  const bodyImgs = [...p.body.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1].trim());
+  const gallery = [...new Set([p.cover, ...bodyImgs].filter(Boolean))];
+  const text = markdown(p.body, { dropImages: true });
+  return `
   <li class="tl-item">
     <span class="tl-dot" aria-hidden="true"></span>
-    <a class="tl-card" href="/news/${esc(p.slug)}/">
-      ${p.cover ? `<span class="tl-media"><img src="${esc(p.cover)}" alt="" loading="lazy" /></span>` : ''}
-      <span class="tl-content">
+    <div class="tl-card">
+      ${gallery.length ? `<div class="tl-media" data-count="${gallery.length}">${gallery.map((src) => `<img src="${esc(src)}" alt="" loading="lazy" />`).join('')}</div>` : ''}
+      <div class="tl-content">
         <span class="tl-date">${esc(formatDate(p.date))}</span>
-        <span class="tl-title">${esc(p.title)}</span>
-        ${p.excerpt ? `<span class="tl-excerpt">${esc(p.excerpt)}</span>` : ''}
-      </span>
-    </a>
+        <h2 class="tl-title">${esc(p.title)}</h2>
+        ${text ? `<div class="tl-text">${text}</div>` : ''}
+      </div>
+    </div>
   </li>`;
+};
 
 /* ---------------- pages ---------------- */
 
@@ -315,7 +322,7 @@ pages.push({
         ${latestPost ? `<p class="meta">${esc(formatDate(latestPost.date))}</p>
         <h3 class="pub__title" style="font-size:1.34rem;margin-top:8px">${esc(latestPost.title)}</h3>
         ${latestPost.excerpt ? `<p class="body" style="margin-top:8px">${esc(latestPost.excerpt)}</p>` : ''}
-        <a class="pub__doi" href="/news/${esc(latestPost.slug)}/">Read the post</a>` : ''}
+        <a class="pub__doi" href="/news/">See the timeline</a>` : ''}
         <p style="margin-top:22px"><a class="btn" href="/news/">More news</a></p>
       </div>
     </div>
@@ -708,45 +715,7 @@ pages.push({
   </section>`,
 });
 
-/* --- One page per news post --- */
-for (const p of posts) {
-  /* Gather every image on the post (cover + any in the body). With more than
-     one, show them as an interactive stack (fan out / lift on hover) instead of
-     a single lead image; the body text then renders without inline images. */
-  const bodyImgs = [...p.body.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1].trim());
-  const gallery = [...new Set([p.cover, ...bodyImgs].filter(Boolean))];
-  const media = gallery.length > 1
-    ? `<div class="photo-stack" data-count="${gallery.length}">
-        ${gallery.map((src) => `<figure class="photo-stack__item"><img src="${esc(src)}" alt="" loading="lazy" /></figure>`).join('')}
-      </div>
-      <p class="photo-stack__hint meta">Hover a photo to bring it forward</p>`
-    : (p.cover ? `<figure class="post-fig post-fig--lead"><img src="${esc(p.cover)}" alt="" /></figure>` : '');
-  const text = gallery.length > 1
-    ? markdown(p.body, { dropImages: true })
-    : markdown(p.body, { skipImage: p.cover });
-
-  pages.push({
-    key: 'news', path: `/news/${p.slug}/`, file: `news/${p.slug}/index.html`,
-    title: `${p.title} | Liu Lab`,
-    desc: p.excerpt || `${p.title} — Liu Lab news.`,
-    body: `
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow"><a href="/news/">News</a></p>
-      <h1 class="h-page">${esc(p.title)}</h1>
-      <p class="meta">${esc(formatDate(p.date))}</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap post-article">
-      ${media}
-      ${text}
-      <p style="margin-top:36px"><a class="btn" href="/news/">← All news</a></p>
-    </div>
-  </section>`,
-  });
-}
+/* No per-post pages: the timeline on /news/ carries every event in full. */
 
 /* ---------------- emit ---------------- */
 
