@@ -94,5 +94,53 @@
     "role": "Undergraduate",
     "bio": "Lukai joined in fall 2026, studies Bioinformatics at the School of Life Sciences, and works on AI-driven protein dynamics prediction and de novo protein design.",
     "photo": "/assets/img/people/lukai-lin.jpg"
+  },
+  {
+    "sortOrder": 130,
+    "nameEn": "Yongyi Jinma",
+    "nameZh": "金马咏仪",
+    "role": "Master's Student",
+    "bio": "Yongyi joined as a master's student in 2025 and develops AI tools for high-throughput analysis of tissue-slide images.",
+    "photo": "/assets/img/people/yongyi-jinma.jpg"
+  },
+  {
+    "sortOrder": 140,
+    "nameEn": "Yingying He",
+    "nameZh": "何滢颖",
+    "role": "PhD Student",
+    "bio": "Yingying joined in fall 2026 and works on protein engineering and imaging-based proteomics.",
+    "photo": "/assets/img/people/yingying-he.jpg"
+  },
+  {
+    "sortOrder": 150,
+    "nameEn": "Jialu Yan",
+    "nameZh": "闫嘉璐",
+    "role": "Undergraduate",
+    "bio": "Jialu joined in summer 2026 and is completing an undergraduate thesis project in the lab.",
+    "photo": "/assets/img/people/jialu-yan.jpg"
+  },
+  {
+    "sortOrder": 160,
+    "nameEn": "Yiya Ma",
+    "nameZh": "马莉雅",
+    "role": "Undergraduate",
+    "bio": "Yiya joined in summer 2026 and is completing an undergraduate thesis project in the lab.",
+    "photo": "/assets/img/people/yiya-ma.jpg"
+  },
+  {
+    "sortOrder": 170,
+    "nameEn": "Jingyi Wu",
+    "nameZh": "吴景毅",
+    "role": "Master's Student",
+    "bio": "Jingyi joined as a master's student in 2026 and works on laboratory automation.",
+    "photo": "/assets/img/people/jingyi-wu.jpg"
+  },
+  {
+    "sortOrder": 180,
+    "nameEn": "Xinyi Liu",
+    "nameZh": "刘鑫仪",
+    "role": "PhD Student",
+    "bio": "Xinyi joined as a PhD student in 2026 and works on AI-driven antibody design.",
+    "photo": "/assets/img/people/xinyi-liu.jpg"
   }
 ]
