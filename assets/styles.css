@@ -648,3 +648,11 @@ img.toolfig { object-fit: cover; }
   .photo-stack__item:hover { transform: none; }
   .photo-stack__hint { display: none; }
 }
+
+/* Photo stack — keep more than two photos inside the reading column (desktop). */
+@media (min-width: 721px) {
+  .photo-stack[data-count="3"] .photo-stack__item { width: 39%; }
+  .photo-stack[data-count="4"] .photo-stack__item { width: 33%; }
+  .photo-stack[data-count="5"] .photo-stack__item { width: 28%; }
+  .photo-stack[data-count="6"] .photo-stack__item { width: 25%; }
+}
