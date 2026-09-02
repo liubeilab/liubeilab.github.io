@@ -572,3 +572,50 @@ img.toolfig { object-fit: cover; }
 .post-fig--lead { margin-top: 0; }
 .post-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 30px 0; }
 .post-gallery .post-fig { margin: 0; }
+
+/* ---- News timeline (assets/timeline.js drives reveal + progress) ---- */
+.timeline { position: relative; max-width: 940px; margin: 0 auto; list-style: none; padding: 6px 0 4px; }
+/* the spine, plus a progress overlay that fills as you scroll */
+.timeline::before, .timeline::after {
+  content: ""; position: absolute; top: 0; left: 50%; width: 2px; transform: translateX(-50%);
+}
+.timeline::before { bottom: 0; background: var(--line); }
+.timeline::after { height: var(--tl-progress, 0%); background: linear-gradient(180deg, var(--accent), var(--accent-deep)); transition: height .15s linear; }
+
+.tl-item { position: relative; width: 50%; box-sizing: border-box; padding: 0 46px 42px; }
+.tl-item:nth-child(even) { left: 50%; }
+/* hidden→revealed only after timeline.js adds .tl-ready, so no-JS shows all */
+.timeline.tl-ready .tl-item { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s cubic-bezier(.22,.61,.36,1); }
+.timeline.tl-ready .tl-item.is-visible { opacity: 1; transform: none; }
+
+.tl-dot {
+  position: absolute; top: 4px; width: 15px; height: 15px; border-radius: 50%;
+  background: var(--accent); border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--line-strong); z-index: 2;
+}
+.tl-item:nth-child(odd) .tl-dot { right: -8px; }
+.tl-item:nth-child(even) .tl-dot { left: -8px; }
+
+.tl-card {
+  display: block; border: 1px solid var(--line); overflow: hidden;
+  background: linear-gradient(180deg, oklch(0.200 0.030 260 / 0.96), oklch(0.160 0.028 260 / 0.98));
+  transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+.tl-card:hover { transform: translateY(-4px); border-color: var(--line-strong); box-shadow: 0 20px 44px -26px rgba(0,0,0,.75); }
+.tl-media { display: block; overflow: hidden; }
+.tl-media img { width: 100%; height: 190px; object-fit: cover; display: block; transition: transform .6s ease; }
+.tl-card:hover .tl-media img { transform: scale(1.045); }
+.tl-content { display: block; padding: 17px 20px 20px; }
+.tl-date { display: block; font-family: var(--mono); font-size: 0.73rem; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+.tl-title { display: block; font-family: var(--display); font-size: 1.24rem; line-height: 1.25; margin-top: 8px; color: var(--ink); }
+.tl-excerpt { display: block; margin-top: 8px; color: var(--muted); font-size: 0.93rem; line-height: 1.6; }
+.tl-card:hover .tl-title { color: var(--accent); }
+
+@media (max-width: 720px) {
+  .timeline::before, .timeline::after { left: 7px; }
+  .tl-item, .tl-item:nth-child(even) { width: 100%; left: 0; padding: 0 0 30px 32px; }
+  .tl-item .tl-dot, .tl-item:nth-child(even) .tl-dot { left: 0; right: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline.tl-ready .tl-item { opacity: 1; transform: none; transition: none; }
+  .timeline::after { transition: none; }
+}

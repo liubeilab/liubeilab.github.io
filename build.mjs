@@ -161,6 +161,7 @@ ${body}
 </footer>
 
 <script src="/assets/nav.js"></script>
+<script src="/assets/timeline.js"></script>
 </body>
 </html>
 `;
@@ -187,6 +188,21 @@ const postCard = (p) => `
       ${p.excerpt ? `<p>${esc(p.excerpt)}</p>` : ''}
     </div>
   </a>`;
+
+/* One event on the news timeline. Reveal + progress-line motion are handled by
+   assets/timeline.js; without it the items simply show as a static list. */
+const timelineItem = (p) => `
+  <li class="tl-item">
+    <span class="tl-dot" aria-hidden="true"></span>
+    <a class="tl-card" href="/news/${esc(p.slug)}/">
+      ${p.cover ? `<span class="tl-media"><img src="${esc(p.cover)}" alt="" loading="lazy" /></span>` : ''}
+      <span class="tl-content">
+        <span class="tl-date">${esc(formatDate(p.date))}</span>
+        <span class="tl-title">${esc(p.title)}</span>
+        ${p.excerpt ? `<span class="tl-excerpt">${esc(p.excerpt)}</span>` : ''}
+      </span>
+    </a>
+  </li>`;
 
 /* ---------------- pages ---------------- */
 
@@ -684,7 +700,9 @@ pages.push({
   </section>
 
   <section class="section">
-    <div class="wrap"><div class="posts">${posts.map(postCard).join('')}</div></div>
+    <div class="wrap">
+      <ol class="timeline">${posts.map(timelineItem).join('')}</ol>
+    </div>
   </section>`,
 });
 
