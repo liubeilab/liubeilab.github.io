@@ -1,0 +1,191 @@
+[
+  {
+    "idx": 21,
+    "year": 2025,
+    "title": "Combined learning for augmented super-resolution imaging",
+    "authors": "Ren C, Pan T, Yang T, Yin N, Gu L, Liu B, Ji W",
+    "journal": "Optics & Laser Technology 192, 113943",
+    "doi": "10.1016/j.optlastec.2025.113943",
+    "featured": false
+  },
+  {
+    "idx": 20,
+    "year": 2024,
+    "title": "Live-cell biosensors based on the fluorescence lifetime of environment-sensing dyes",
+    "authors": "Mehl BP, Vairaprakash P, Li L, Hinde E, MacNevin CJ, Hsu CW, Gratton E, Liu B*, Hahn KM*",
+    "journal": "Cell Reports Methods 4, 100734",
+    "doi": "10.1016/j.crmeth.2024.100734",
+    "featured": true
+  },
+  {
+    "idx": 19,
+    "year": 2023,
+    "title": "Time-resolved cryo-EM (TR-EM) analysis of substrate polyubiquitination by the RING E3 anaphase-promoting complex/cyclosome (APC/C)",
+    "authors": "Bodrug T, Welsh KA, Bolhuis DL, et al.",
+    "journal": "Nature Structural & Molecular Biology 30, 1663-1674",
+    "doi": "10.1038/s41594-023-01105-5",
+    "featured": false
+  },
+  {
+    "idx": 18,
+    "year": 2023,
+    "title": "Targeting small GTPases: emerging grasps on previously untamable targets, pioneered by KRAS",
+    "authors": "Yin G, Huang J, Petela J, et al.",
+    "journal": "Signal Transduction and Targeted Therapy 8, 212",
+    "doi": "10.1038/s41392-023-01441-4",
+    "featured": false
+  },
+  {
+    "idx": 17,
+    "year": 2022,
+    "title": "Spatial models of pattern formation during phagocytosis",
+    "authors": "Herron JC, Hu S, Liu B, et al.",
+    "journal": "PLoS Computational Biology 18(10), e1010092",
+    "doi": "10.1371/journal.pcbi.1010092",
+    "featured": false
+  },
+  {
+    "idx": 16,
+    "year": 2022,
+    "title": "Actin nano-architecture of phagocytic podosomes",
+    "authors": "Herron JC, Hu S, Watanabe T, Nogueira AT, Liu B, Kern ME, et al.",
+    "journal": "Nature Communications 13, 4363",
+    "doi": "10.1038/s41467-022-32038-0",
+    "featured": false
+  },
+  {
+    "idx": 15,
+    "year": 2021,
+    "title": "Biosensors based on peptide exposure show single molecule conformations in live cells",
+    "authors": "Liu B*, Stone O*, Pablo M*, et al.",
+    "journal": "Cell 184(22), 5670-5685.e23",
+    "doi": "10.1016/j.cell.2021.09.026",
+    "featured": true
+  },
+  {
+    "idx": 14,
+    "year": 2020,
+    "title": "Deep learning enables structured illumination microscopy with low light levels and enhanced speed",
+    "authors": "Jin L*, Liu B*#, Zhao F, et al.",
+    "journal": "Nature Communications 11, 1934 (co-first, co-corresponding)",
+    "doi": "10.1038/s41467-020-15784-x",
+    "featured": true
+  },
+  {
+    "idx": 13,
+    "year": 2020,
+    "title": "Engineering Optogenetic Protein Analogs",
+    "authors": "Liu B, Marston DJ, Hahn KM",
+    "journal": "Methods in Molecular Biology 2173, 113-126",
+    "doi": "10.1007/978-1-0716-0755-8_7",
+    "featured": false
+  },
+  {
+    "idx": 12,
+    "year": 2019,
+    "title": "Optogenetic control of cofilin and αTAT in living cells using Z-lock",
+    "authors": "Stone O*, Kaul N*, Liu B*, et al.",
+    "journal": "Nature Chemical Biology 15, 1183-1190 (co-first)",
+    "doi": "10.1038/s41589-019-0405-4",
+    "featured": false
+  },
+  {
+    "idx": 11,
+    "year": 2019,
+    "title": "VIEW-MOD: a versatile illumination engine with a modular optical design for fluorescence microscopy",
+    "authors": "Liu B*, Hobson C*, et al.",
+    "journal": "Optics Express 27, 19950-19972",
+    "doi": "10.1364/oe.27.019950",
+    "featured": false
+  },
+  {
+    "idx": 10,
+    "year": 2016,
+    "title": "Ratiometric Imaging Using a Single Dye Enables Simultaneous Visualization of Rac1 and Cdc42 Activation",
+    "authors": "MacNevin CJ*, Toutchkine A, Marston DJ, Hsu CW, Tsygankov D, Li L, Liu B, Qi T, Nguyen DV, Hahn KM",
+    "journal": "Journal of the American Chemical Society 138, 2571-2575",
+    "doi": "10.1021/jacs.5b09764.s001",
+    "featured": false
+  },
+  {
+    "idx": 9,
+    "year": 2015,
+    "title": "Three-dimensional super-resolution protein localization correlated with vitrified cellular context",
+    "authors": "Liu B*, Xue Y*, Zhao W*, et al.",
+    "journal": "Scientific Reports 5",
+    "doi": "10.1016/j.bpj.2014.11.2595",
+    "featured": false
+  },
+  {
+    "idx": 8,
+    "year": 2015,
+    "title": "The effect of the size of fluorescent dextran on its endocytic pathway",
+    "authors": "Li L, Wan T, Wan M, Liu B, Cheng R, Zhang R",
+    "journal": "Cell Biology International 39(5), 531-539",
+    "doi": "10.1002/cbin.10424",
+    "featured": false
+  },
+  {
+    "idx": 7,
+    "year": 2014,
+    "title": "SEC-10 and RAB-10 coordinate basolateral recycling of clathrin-independent cargo through endosomal tubules in Caenorhabditis elegans",
+    "authors": "Chen S*, Li L*, Li J*, Liu B, et al.",
+    "journal": "PNAS 111(43), 15432-15437",
+    "doi": "10.1073/pnas.1408327111",
+    "featured": false
+  },
+  {
+    "idx": 6,
+    "year": 2014,
+    "title": "Potential phosphorylation site modulates the dimerization and activity of KIF1A",
+    "authors": "Liu B, Yue Y, Yu Y, Ren JQ, Feng W, Huo L, Xu T",
+    "journal": "Progress in Biochemistry and Biophysics 41(9), 870-876",
+    "doi": "",
+    "featured": false
+  },
+  {
+    "idx": 5,
+    "year": 2014,
+    "title": "A machine learning-based method to detect fluorescent spots and an accelerated, parallel implementation of this method",
+    "authors": "Liu B, Feng W, Xu T, Ji W",
+    "journal": "Science Bulletin 59, 3573-3578",
+    "doi": "10.1007/s11434-014-0385-4",
+    "featured": false
+  },
+  {
+    "idx": 4,
+    "year": 2013,
+    "title": "Ultrafast, accurate, and robust localization of anisotropic dipoles",
+    "authors": "Zhang Y, Gu L, Chang H, Ji W, Chen Y, Zhang M, Yang L, Liu B, Chen L, Xu T",
+    "journal": "Protein & Cell 4(8), 598-606",
+    "doi": "10.1007/s13238-013-3904-1",
+    "featured": false
+  },
+  {
+    "idx": 3,
+    "year": 2012,
+    "title": "A unique series of reversibly switchable fluorescent proteins with beneficial properties for various applications",
+    "authors": "Chang H*, Zhang M*, Ji W*, Chen J, Zhang Y, Liu B, Lu J, Zhang J, Xu P, Xu T",
+    "journal": "PNAS",
+    "doi": "10.1073/pnas.1113770109",
+    "featured": false
+  },
+  {
+    "idx": 2,
+    "year": 2012,
+    "title": "Rational design of true monomeric and bright photoactivatable fluorescent proteins",
+    "authors": "Zhang M*, Chang H*, Zhang Y*, Yu J, Wu L, Ji W, Chen J, Liu B, Lu J, Liu Y, Zhang J, Xu P, Xu T",
+    "journal": "Nature Methods",
+    "doi": "10.1038/nmeth.2021",
+    "featured": false
+  },
+  {
+    "idx": 1,
+    "year": 2010,
+    "title": "UNC-31/CAPS docks and primes dense core vesicles in C. elegans neurons",
+    "authors": "Lin XG, Ming M, Chen MR, Niu WP, Zhang YD, Liu B, Jiu YM, Yu JW, Xu T, Wu ZX",
+    "journal": "Biochemical and Biophysical Research Communications 397(3), 526-531",
+    "doi": "10.1016/j.bbrc.2010.05.148",
+    "featured": false
+  }
+]

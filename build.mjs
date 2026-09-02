@@ -1,13 +1,103 @@
-/* Builds the eight static pages from one shell + per-page bodies.
-   Header and footer stay in the emitted HTML (not injected by JS) so crawlers
-   see real markup and each route keeps its own URL. Run: node build.mjs */
+/* Builds the static site from local content — no runtime data fetching.
+   Structured content lives in data/*.json; news posts are Markdown files in
+   news/. Header and footer are baked into the emitted HTML so crawlers see real
+   markup and each route keeps its own URL. Run: node build.mjs
+   Requires Node 18+. No dependencies. */
 
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-/* Output lands beside this script: the repo root is the published site. */
 const OUT = dirname(fileURLToPath(import.meta.url));
+const readJSON = (f) => JSON.parse(readFileSync(join(OUT, f), 'utf8'));
+
+/* ---------------- content ---------------- */
+
+const publications = readJSON('data/publications.json').sort((a, b) => b.idx - a.idx);
+const team         = readJSON('data/team.json').sort((a, b) => a.sortOrder - b.sortOrder);
+const alumni       = readJSON('data/alumni.json').sort((a, b) => a.sortOrder - b.sortOrder);
+const resources    = readJSON('data/resources.json').sort((a, b) => a.sortOrder - b.sortOrder);
+
+/* News: one Markdown file per post, `<name>.md`, with YAML-ish front matter. */
+function parseFrontMatter(raw) {
+  const m = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!m) return { meta: {}, body: raw };
+  const meta = {};
+  for (const line of m[1].split('\n')) {
+    const i = line.indexOf(':');
+    if (i === -1) continue;
+    const key = line.slice(0, i).trim();
+    let val = line.slice(i + 1).trim();
+    if (/^".*"$/.test(val)) { try { val = JSON.parse(val); } catch { val = val.slice(1, -1); } }
+    meta[key] = val;
+  }
+  return { meta, body: m[2] };
+}
+
+const posts = readdirSync(join(OUT, 'news'))
+  .filter((f) => f.endsWith('.md'))
+  .map((f) => {
+    const { meta, body } = parseFrontMatter(readFileSync(join(OUT, 'news', f), 'utf8'));
+    return { slug: f.replace(/\.md$/, ''), title: meta.title || '', date: meta.date || '',
+             excerpt: meta.excerpt || '', cover: meta.cover || '', body: body.trim() };
+  })
+  .sort((a, b) => (a.date < b.date ? 1 : -1));
+
+/* ---------------- helpers ---------------- */
+
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const formatDate = (d) => {
+  const dt = new Date(d);
+  return Number.isNaN(+dt) ? String(d)
+    : dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+};
+
+/* A small Markdown renderer — enough for lab news: paragraphs, headings, lists,
+   blockquotes, rules, images (single and galleries), links, bold, italic, code.
+   Text is HTML-escaped first, so post content cannot inject markup. */
+const IMG = /^!\[([^\]]*)\]\(([^)]+)\)$/;
+function inline(s) {
+  s = esc(s);
+  s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, a, u) => `<img src="${u}" alt="${a}" loading="lazy" />`);
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, t, u) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`);
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/(^|[^\w])_([^_]+)_(?=[^\w]|$)/g, '$1<em>$2</em>');
+  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+  return s;
+}
+function markdown(src, { skipImage = '' } = {}) {
+  const blocks = src.trim().split(/\n{2,}/).map((b) => b.trim()).filter(Boolean);
+  const out = [];
+  for (const block of blocks) {
+    const lines = block.split('\n');
+    const imgs = lines.every((l) => IMG.test(l.trim())) ? lines.map((l) => l.trim().match(IMG)) : null;
+    if (imgs) {
+      const kept = imgs.filter((m) => m[2] !== skipImage);
+      if (!kept.length) continue;
+      const figs = kept.map(([, alt, src]) =>
+        `<figure class="post-fig"><img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" /></figure>`).join('');
+      out.push(kept.length > 1 ? `<div class="post-gallery">${figs}</div>` : figs);
+    } else if (/^#{1,6}\s/.test(block)) {
+      const level = block.match(/^#+/)[0].length;
+      out.push(`<h${Math.min(level + 1, 4)}>${inline(block.replace(/^#+\s/, ''))}</h${Math.min(level + 1, 4)}>`);
+    } else if (lines.every((l) => /^[-*]\s/.test(l))) {
+      out.push(`<ul>${lines.map((l) => `<li>${inline(l.replace(/^[-*]\s/, ''))}</li>`).join('')}</ul>`);
+    } else if (lines.every((l) => /^\d+\.\s/.test(l))) {
+      out.push(`<ol>${lines.map((l) => `<li>${inline(l.replace(/^\d+\.\s/, ''))}</li>`).join('')}</ol>`);
+    } else if (lines.every((l) => /^>\s?/.test(l))) {
+      out.push(`<blockquote>${inline(lines.map((l) => l.replace(/^>\s?/, '')).join(' '))}</blockquote>`);
+    } else if (/^([-*_])\1{2,}$/.test(block)) {
+      out.push('<hr />');
+    } else {
+      out.push(`<p>${inline(block.replace(/\n/g, '<br />'))}</p>`);
+    }
+  }
+  return out.join('\n');
+}
+
+/* ---------------- shell ---------------- */
 
 const NAV = [
   ['/',              'Home',            'home'],
@@ -20,7 +110,7 @@ const NAV = [
   ['/news/',         'News',            'news'],
 ];
 
-const shell = ({ key, path, title, desc, body, script = '', heroCss = '' }) => `<!doctype html>
+const shell = ({ key, path, title, desc, body, heroCss = '' }) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -71,16 +161,41 @@ ${body}
 </footer>
 
 <script src="/assets/nav.js"></script>
-${script}
 </body>
 </html>
 `;
 
-/* ---------------- page bodies ---------------- */
+/* ---------------- reusable fragments ---------------- */
+
+const pubEntry = (p) => `
+  <article class="pub"${p.featured ? ' data-featured' : ''}>
+    <div class="pub__n">${esc(p.idx)}</div>
+    <div>
+      <h3 class="pub__title">${esc(p.title)}</h3>
+      <p class="pub__authors">${esc(p.authors)}</p>
+      <p class="pub__journal">${esc(p.journal)}</p>
+      ${p.doi ? `<a class="pub__doi" href="https://doi.org/${esc(p.doi)}" target="_blank" rel="noopener">${esc(p.doi)}</a>` : ''}
+    </div>
+  </article>`;
+
+const postCard = (p) => `
+  <a class="post" href="/news/${esc(p.slug)}/">
+    ${p.cover ? `<img src="${esc(p.cover)}" alt="" loading="lazy" />` : ''}
+    <div class="post__body">
+      <p class="meta">${esc(formatDate(p.date))}</p>
+      <h2 class="post__title">${esc(p.title)}</h2>
+      ${p.excerpt ? `<p>${esc(p.excerpt)}</p>` : ''}
+    </div>
+  </a>`;
+
+/* ---------------- pages ---------------- */
 
 const pages = [];
 
-/* --- Home: deliberately short. Four sections, no long-form copy. --- */
+const latestPub = publications.find((p) => p.featured) || publications[0];
+const latestPost = posts[0];
+
+/* --- Home --- */
 pages.push({
   key: 'home', path: '/', file: 'index.html',
   title: 'Liu Lab — Decoding Dynamic States of Living Systems',
@@ -171,12 +286,18 @@ pages.push({
     <div class="wrap recent">
       <div>
         <p class="eyebrow">Latest paper</p>
-        <div id="latest-pub" data-loading></div>
+        ${latestPub ? `<h3 class="pub__title" style="font-size:1.34rem">${esc(latestPub.title)}</h3>
+        <p class="pub__authors" style="margin-top:8px">${esc(latestPub.authors)}</p>
+        <p class="pub__journal">${esc(latestPub.journal)}</p>
+        ${latestPub.doi ? `<a class="pub__doi" href="https://doi.org/${esc(latestPub.doi)}" target="_blank" rel="noopener">${esc(latestPub.doi)}</a>` : ''}` : ''}
         <p style="margin-top:22px"><a class="btn" href="/publications/">All publications</a></p>
       </div>
       <div>
         <p class="eyebrow">From the lab</p>
-        <div id="latest-post" data-loading></div>
+        ${latestPost ? `<p class="meta">${esc(formatDate(latestPost.date))}</p>
+        <h3 class="pub__title" style="font-size:1.34rem;margin-top:8px">${esc(latestPost.title)}</h3>
+        ${latestPost.excerpt ? `<p class="body" style="margin-top:8px">${esc(latestPost.excerpt)}</p>` : ''}
+        <a class="pub__doi" href="/news/${esc(latestPost.slug)}/">Read the post</a>` : ''}
         <p style="margin-top:22px"><a class="btn" href="/news/">More news</a></p>
       </div>
     </div>
@@ -196,24 +317,9 @@ pages.push({
       </div>
     </div>
   </section>`,
-  script: `<script type="module">
-import { getPublications, getPosts, hydrate, formatDate, esc } from '/assets/wix.js';
-hydrate(document.getElementById('latest-pub'),
-  async () => (await getPublications()).filter(p => p.featured).slice(0, 1),
-  ([p]) => \`<h3 class="pub__title" style="font-size:1.34rem">\${esc(p.title)}</h3>
-    <p class="pub__authors" style="margin-top:8px">\${esc(p.authors)}</p>
-    <p class="pub__journal">\${esc(p.journal)}</p>
-    \${p.doi ? \`<a class="pub__doi" href="https://doi.org/\${esc(p.doi)}" target="_blank" rel="noopener">\${esc(p.doi)}</a>\` : ''}\`);
-hydrate(document.getElementById('latest-post'),
-  async () => (await getPosts(4)).slice(0, 1),
-  ([p]) => \`<p class="meta">\${esc(formatDate(p.date))}</p>
-    <h3 class="pub__title" style="font-size:1.34rem;margin-top:8px">\${esc(p.title)}</h3>
-    \${p.excerpt ? \`<p class="body" style="margin-top:8px">\${esc(p.excerpt)}</p>\` : ''}
-    <a class="pub__doi" href="\${esc(p.url)}" target="_blank" rel="noopener">Read the post</a>\`);
-</script>`,
 });
 
-/* --- Vision / Research: the detail that used to crowd the home page --- */
+/* --- Vision / Research --- */
 const STORIES = [
   ['immune',  'Immune response',    'How is signalling organised at immune-cell interfaces?', 'Immune responses emerge from signals assembled and remodelled in specific cellular locations. We investigate how molecular activity is coordinated in macrophages, podosomes and immune synapses, and how local organisation shapes cell behaviour.', 'immune-signaling.jpg', 'Conceptual visualisation of a macrophage with podosome-scale puncta and a localised immune signalling zone'],
   ['neuronal','Neuronal activation', 'How does activity reorganise the neuronal nucleus?',   'Neuronal activation reaches beyond the membrane and cytoplasm to reshape molecular organisation inside the nucleus. We study how phosphorylation and biomolecular condensation influence nuclear speckles, nucleolar organisation and other dynamic nuclear states.', 'neuronal-condensates.jpg', 'Conceptual visualisation of a neuron with long processes and a magnified view of nuclear speckles, nucleolus and biomolecular condensates'],
@@ -331,7 +437,13 @@ pages.push({
   </section>`,
 });
 
-/* --- Open Science (resources from CMS) --- */
+/* --- Open Science (resources grouped by category) --- */
+const resourceGroups = (() => {
+  const groups = {};
+  for (const r of resources) (groups[r.category] ||= []).push(r);
+  return groups;
+})();
+
 pages.push({
   key: 'open', path: '/open-science/', file: 'open-science/index.html',
   title: 'Open Science | Liu Lab',
@@ -366,25 +478,26 @@ pages.push({
         <h2 class="h-section">Tools we rely on</h2>
         <p class="lead">Our own code, plus the resources we point new lab members to. Most are maintained by the wider community, not by us.</p>
       </div>
-      <div id="resources" data-loading></div>
+      <div class="grid" style="--cols:${Math.min(Object.keys(resourceGroups).length, 4)}">
+        ${Object.entries(resourceGroups).map(([cat, rows]) => `<article class="tile">
+          <h3 class="h-card">${esc(cat)}</h3>
+          <div class="res-group">${rows.map((r) => `<div class="res"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a><span>${esc(r.note)}</span></div>`).join('')}</div>
+        </article>`).join('')}
+      </div>
       <p class="res-note">Need a plasmid, a protocol, or help with a biosensor or optogenetic tool? Email <a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a>.</p>
     </div>
   </section>`,
-  script: `<script type="module">
-import { getResources, hydrate, esc } from '/assets/wix.js';
-hydrate(document.getElementById('resources'), getResources, items => {
-  const groups = {};
-  for (const r of items) (groups[r.category] ||= []).push(r);
-  return '<div class="grid" style="--cols:' + Math.min(Object.keys(groups).length, 4) + '">' +
-    Object.entries(groups).map(([cat, rows]) => \`<article class="tile">
-      <h3 class="h-card">\${esc(cat)}</h3>
-      <div class="res-group">\${rows.map(r => \`<div class="res"><a href="\${esc(r.url)}" target="_blank" rel="noopener">\${esc(r.name)}</a><span>\${esc(r.note)}</span></div>\`).join('')}</div>
-    </article>\`).join('') + '</div>';
-});
-</script>`,
 });
 
-/* --- Publications (from CMS) --- */
+/* --- Publications (grouped by year) --- */
+const pubYears = publications.map((p) => Number(p.year)).filter(Boolean);
+const pubGroups = [];
+for (const p of publications) {
+  const last = pubGroups[pubGroups.length - 1];
+  if (last && last.year === p.year) last.items.push(p);
+  else pubGroups.push({ year: p.year, items: [p] });
+}
+
 pages.push({
   key: 'pubs', path: '/publications/', file: 'publications/index.html',
   title: 'Publications | Liu Lab',
@@ -400,46 +513,22 @@ pages.push({
 
   <section class="section">
     <div class="wrap">
-      <p class="pub-summary meta" id="pub-summary"></p>
-      <div class="pub-list" id="pubs" data-loading></div>
+      <p class="pub-summary meta">${publications.length} publications · ${Math.min(...pubYears)}–${Math.max(...pubYears)}</p>
+      <div class="pub-list">
+        ${pubGroups.map((g) => `
+        <section class="pub-year">
+          <h2 class="pub-year__label">${esc(g.year)}</h2>
+          ${g.items.map(pubEntry).join('')}
+        </section>`).join('')}
+      </div>
     </div>
   </section>`,
-  script: `<script type="module">
-import { getPublications, hydrate, esc } from '/assets/wix.js';
-const entry = p => \`
-  <article class="pub"\${p.featured ? ' data-featured' : ''}>
-    <div class="pub__n">\${esc(p.idx)}</div>
-    <div>
-      <h3 class="pub__title">\${esc(p.title)}</h3>
-      <p class="pub__authors">\${esc(p.authors)}</p>
-      <p class="pub__journal">\${esc(p.journal)}</p>
-      \${p.doi ? \`<a class="pub__doi" href="https://doi.org/\${esc(p.doi)}" target="_blank" rel="noopener">\${esc(p.doi)}</a>\` : ''}
-    </div>
-  </article>\`;
-
-hydrate(document.getElementById('pubs'), getPublications, pubs => {
-  const summary = document.getElementById('pub-summary');
-  if (summary && pubs.length) {
-    const years = pubs.map(p => Number(p.year)).filter(Boolean);
-    summary.textContent = pubs.length + ' publications · ' + Math.min(...years) + '–' + Math.max(...years);
-  }
-  // group consecutively: the list already arrives sorted newest first
-  const groups = [];
-  for (const p of pubs) {
-    const last = groups[groups.length - 1];
-    if (last && last.year === p.year) last.items.push(p);
-    else groups.push({ year: p.year, items: [p] });
-  }
-  return groups.map(g => \`
-    <section class="pub-year">
-      <h2 class="pub-year__label">\${esc(g.year)}</h2>
-      \${g.items.map(entry).join('')}
-    </section>\`).join('');
-});
-</script>`,
 });
 
-/* --- People (from CMS) --- */
+/* --- People --- */
+const pi = team[0];
+const members = team.slice(1);
+
 pages.push({
   key: 'people', path: '/people/', file: 'people/index.html',
   title: 'People | Liu Lab',
@@ -453,7 +542,18 @@ pages.push({
   </section>
 
   <section class="section">
-    <div class="wrap"><div id="pi" data-loading></div></div>
+    <div class="wrap">
+      <div class="pi">
+        <img src="${esc(pi.photo)}" alt="${esc(pi.nameEn)}" />
+        <div class="pi__body">
+          <p class="pi__zh">${esc(pi.nameZh)}</p>
+          <h2 class="h-section" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">${esc(pi.nameEn)}, Ph.D.</h2>
+          <p class="meta">${esc(pi.role)}</p>
+          <p class="body">${esc(pi.bio)}</p>
+          <p class="meta"><a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a></p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="section section--alt">
@@ -462,7 +562,18 @@ pages.push({
         <p class="eyebrow">Current members</p>
         <h2 class="h-section">Our team</h2>
       </div>
-      <div class="people" id="members" data-loading></div>
+      <div class="people">
+        ${members.map((m) => `
+        <article class="person">
+          <img src="${esc(m.photo)}" alt="${esc(m.nameEn)}" loading="lazy" />
+          <div class="person__body">
+            <h3 class="person__name">${esc(m.nameZh)}</h3>
+            <p class="person__en">${esc(m.nameEn)}</p>
+            <p class="person__role">${esc(m.role)}</p>
+            <p>${esc(m.bio)}</p>
+          </div>
+        </article>`).join('')}
+      </div>
     </div>
   </section>
 
@@ -472,38 +583,15 @@ pages.push({
         <p class="eyebrow">Alumni</p>
         <h2 class="h-section">Former lab members</h2>
       </div>
-      <div class="alumni" id="alumni" data-loading></div>
+      <div class="alumni">
+        ${alumni.map((a) => `
+        <article class="alumnus">
+          <img src="${esc(a.photo)}" alt="" loading="lazy" />
+          <div><b>${esc(a.nameZh || a.nameEn)}</b><span class="meta">${esc(a.years)}</span></div>
+        </article>`).join('')}
+      </div>
     </div>
   </section>`,
-  script: `<script type="module">
-import { getTeam, getAlumni, hydrate, wixImage, esc } from '/assets/wix.js';
-hydrate(document.getElementById('pi'), async () => (await getTeam()).slice(0, 1), ([p]) => \`
-  <div class="pi">
-    <img src="\${esc(wixImage(p.photo, 760, 980, 'fit'))}" alt="\${esc(p.nameEn)}" />
-    <div class="pi__body">
-      <p class="pi__zh">\${esc(p.nameZh)}</p>
-      <h2 class="h-section" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">\${esc(p.nameEn)}, Ph.D.</h2>
-      <p class="meta">\${esc(p.role)}</p>
-      <p class="body">\${esc(p.bio)}</p>
-      <p class="meta"><a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a></p>
-    </div>
-  </div>\`);
-hydrate(document.getElementById('members'), async () => (await getTeam()).slice(1), rows => rows.map(m => \`
-  <article class="person">
-    <img src="\${esc(wixImage(m.photo, 620, 465))}" alt="\${esc(m.nameEn)}" loading="lazy" />
-    <div class="person__body">
-      <h3 class="person__name">\${esc(m.nameZh)}</h3>
-      <p class="person__en">\${esc(m.nameEn)}</p>
-      <p class="person__role">\${esc(m.role)}</p>
-      <p>\${esc(m.bio)}</p>
-    </div>
-  </article>\`).join(''));
-hydrate(document.getElementById('alumni'), getAlumni, rows => rows.map(a => \`
-  <article class="alumnus">
-    <img src="\${esc(wixImage(a.photo, 200, 200))}" alt="" loading="lazy" />
-    <div><b>\${esc(a.nameZh)}</b><span class="meta">\${esc(a.years)}</span></div>
-  </article>\`).join(''));
-</script>`,
 });
 
 /* --- Join Us --- */
@@ -517,7 +605,6 @@ pages.push({
       <p class="eyebrow">Join Liu Lab</p>
       <h1 class="h-page">Build new ways to see living systems.</h1>
       <p class="lead">We welcome researchers who want to connect molecular engineering, advanced imaging, computation and quantitative biology.</p>
-      <p class="meta">Listings published April 2024</p>
     </div>
   </section>
 
@@ -582,7 +669,7 @@ pages.push({
   </section>`,
 });
 
-/* --- News (live Wix Blog) --- */
+/* --- News index --- */
 pages.push({
   key: 'news', path: '/news/', file: 'news/index.html',
   title: 'News | Liu Lab',
@@ -597,21 +684,34 @@ pages.push({
   </section>
 
   <section class="section">
-    <div class="wrap"><div class="posts" id="posts" data-loading></div></div>
+    <div class="wrap"><div class="posts">${posts.map(postCard).join('')}</div></div>
   </section>`,
-  script: `<script type="module">
-import { getPosts, hydrate, wixImage, formatDate, esc } from '/assets/wix.js';
-hydrate(document.getElementById('posts'), () => getPosts(50), posts => posts.map(p => \`
-  <a class="post" href="\${esc(p.url)}" target="_blank" rel="noopener">
-    \${p.cover ? \`<img src="\${esc(wixImage(p.cover, 720, 450))}" alt="" loading="lazy" />\` : ''}
-    <div class="post__body">
-      <p class="meta">\${esc(formatDate(p.date))}</p>
-      <h2 class="post__title">\${esc(p.title)}</h2>
-      \${p.excerpt ? \`<p>\${esc(p.excerpt)}</p>\` : ''}
-    </div>
-  </a>\`).join(''));
-</script>`,
 });
+
+/* --- One page per news post --- */
+for (const p of posts) {
+  pages.push({
+    key: 'news', path: `/news/${p.slug}/`, file: `news/${p.slug}/index.html`,
+    title: `${p.title} | Liu Lab`,
+    desc: p.excerpt || `${p.title} — Liu Lab news.`,
+    body: `
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow"><a href="/news/">News</a></p>
+      <h1 class="h-page">${esc(p.title)}</h1>
+      <p class="meta">${esc(formatDate(p.date))}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap post-article">
+      ${p.cover ? `<figure class="post-fig post-fig--lead"><img src="${esc(p.cover)}" alt="" /></figure>` : ''}
+      ${markdown(p.body, { skipImage: p.cover })}
+      <p style="margin-top:36px"><a class="btn" href="/news/">← All news</a></p>
+    </div>
+  </section>`,
+  });
+}
 
 /* ---------------- emit ---------------- */
 
@@ -619,20 +719,16 @@ for (const p of pages) {
   const target = join(OUT, p.file);
   mkdirSync(dirname(target), { recursive: true });
   writeFileSync(target, shell(p), 'utf8');
-  console.log(`  ${p.file.padEnd(28)} ${p.path}`);
+  console.log(`  ${p.file.padEnd(40)} ${p.path}`);
 }
-/* Cutover done: the custom domain is live, so CNAME is emitted with every
-   build. Removing this file would send the site back to liubeilab.github.io. */
+
 writeFileSync(join(OUT, 'CNAME'), 'www.liubeilab.com\n', 'utf8');
 writeFileSync(join(OUT, '.nojekyll'), '', 'utf8');
 
-/* Sitemap + robots. The canonical host is the Wix domain this site is about to
-   take over, so both are written against www.liubeilab.com regardless of where
-   the files are currently served from. */
 const SITE = 'https://www.liubeilab.com';
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map(p => `  <url><loc>${SITE}${p.path}</loc><changefreq>${p.path === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${p.path === '/' ? '1.0' : '0.7'}</priority></url>`).join('\n')}
+${pages.map((p) => `  <url><loc>${SITE}${p.path}</loc><changefreq>${p.path === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${p.path === '/' ? '1.0' : '0.7'}</priority></url>`).join('\n')}
 </urlset>
 `;
 writeFileSync(join(OUT, 'sitemap.xml'), sitemap, 'utf8');
@@ -643,8 +739,6 @@ Allow: /
 Sitemap: ${SITE}/sitemap.xml
 `, 'utf8');
 
-/* A 404 that keeps the reader inside the site rather than dumping them on
-   GitHub's default page. */
 writeFileSync(join(OUT, '404.html'), shell({
   key: '', path: '/404.html',
   title: 'Page not found | Liu Lab',
@@ -664,7 +758,5 @@ writeFileSync(join(OUT, '404.html'), shell({
   </section>`,
 }), 'utf8');
 
-console.log(`\n${pages.length} pages + 404, sitemap.xml, robots.txt, .nojekyll written.`);
+console.log(`\n${pages.length} pages (incl. ${posts.length} news posts) + 404, sitemap.xml, robots.txt, .nojekyll written.`);
 console.log('CNAME: www.liubeilab.com');
-
-

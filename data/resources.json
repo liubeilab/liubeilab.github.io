@@ -1,0 +1,107 @@
+[
+  {
+    "sortOrder": 10,
+    "category": "Lab Software",
+    "name": "Liu Lab on GitHub",
+    "url": "https://github.com/liubeilab",
+    "note": "Open-source imaging and analysis code from the lab"
+  },
+  {
+    "sortOrder": 100,
+    "category": "Molecular Biology",
+    "name": "FPbase",
+    "url": "https://www.fpbase.org/",
+    "note": "Fluorescent protein database"
+  },
+  {
+    "sortOrder": 110,
+    "category": "Molecular Biology",
+    "name": "FBDB",
+    "url": "https://biosensordb.ucsd.edu/index.php",
+    "note": "Genetically encoded biosensor database"
+  },
+  {
+    "sortOrder": 120,
+    "category": "Molecular Biology",
+    "name": "SnapGene",
+    "url": "https://www.snapgene.com/",
+    "note": "Cloning and sequence design"
+  },
+  {
+    "sortOrder": 130,
+    "category": "Molecular Biology",
+    "name": "PyMOL",
+    "url": "https://pymol.org/2/",
+    "note": "Molecular visualization"
+  },
+  {
+    "sortOrder": 140,
+    "category": "Molecular Biology",
+    "name": "NEBaseChanger",
+    "url": "https://nebasechanger.neb.com/",
+    "note": "Q5 site-directed mutagenesis primer design"
+  },
+  {
+    "sortOrder": 150,
+    "category": "Molecular Biology",
+    "name": "Molarity calculator",
+    "url": "https://www.graphpad.com/quickcalcs/molarityform/",
+    "note": "GraphPad QuickCalcs"
+  },
+  {
+    "sortOrder": 200,
+    "category": "Imaging Software",
+    "name": "Fiji",
+    "url": "https://imagej.net/software/fiji/",
+    "note": "Image processing and analysis"
+  },
+  {
+    "sortOrder": 210,
+    "category": "Imaging Software",
+    "name": "Micro-Manager",
+    "url": "https://micro-manager.org/",
+    "note": "Microscope control"
+  },
+  {
+    "sortOrder": 220,
+    "category": "Imaging Software",
+    "name": "Bio-Formats",
+    "url": "https://www.openmicroscopy.org/bio-formats/",
+    "note": "Proprietary format reader"
+  },
+  {
+    "sortOrder": 300,
+    "category": "Optics & Community",
+    "name": "Thorlabs",
+    "url": "https://www.thorlabs.com/",
+    "note": "Optomechanics"
+  },
+  {
+    "sortOrder": 310,
+    "category": "Optics & Community",
+    "name": "Edmund Optics",
+    "url": "https://www.edmundoptics.com/",
+    "note": "Optical components"
+  },
+  {
+    "sortOrder": 320,
+    "category": "Optics & Community",
+    "name": "Newport",
+    "url": "https://www.newport.com/",
+    "note": "Photonics hardware"
+  },
+  {
+    "sortOrder": 330,
+    "category": "Optics & Community",
+    "name": "image.sc forum",
+    "url": "https://forum.image.sc/",
+    "note": "Bioimage analysis community"
+  },
+  {
+    "sortOrder": 340,
+    "category": "Optics & Community",
+    "name": "Confocal list",
+    "url": "https://lists.umn.edu/cgi-bin/wa?A0=confocalmicroscopy",
+    "note": "Microscopy mailing list"
+  }
+]

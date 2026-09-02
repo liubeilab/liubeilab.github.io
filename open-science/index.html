@@ -67,7 +67,21 @@
         <h2 class="h-section">Tools we rely on</h2>
         <p class="lead">Our own code, plus the resources we point new lab members to. Most are maintained by the wider community, not by us.</p>
       </div>
-      <div id="resources" data-loading></div>
+      <div class="grid" style="--cols:4">
+        <article class="tile">
+          <h3 class="h-card">Lab Software</h3>
+          <div class="res-group"><div class="res"><a href="https://github.com/liubeilab" target="_blank" rel="noopener">Liu Lab on GitHub</a><span>Open-source imaging and analysis code from the lab</span></div></div>
+        </article><article class="tile">
+          <h3 class="h-card">Molecular Biology</h3>
+          <div class="res-group"><div class="res"><a href="https://www.fpbase.org/" target="_blank" rel="noopener">FPbase</a><span>Fluorescent protein database</span></div><div class="res"><a href="https://biosensordb.ucsd.edu/index.php" target="_blank" rel="noopener">FBDB</a><span>Genetically encoded biosensor database</span></div><div class="res"><a href="https://www.snapgene.com/" target="_blank" rel="noopener">SnapGene</a><span>Cloning and sequence design</span></div><div class="res"><a href="https://pymol.org/2/" target="_blank" rel="noopener">PyMOL</a><span>Molecular visualization</span></div><div class="res"><a href="https://nebasechanger.neb.com/" target="_blank" rel="noopener">NEBaseChanger</a><span>Q5 site-directed mutagenesis primer design</span></div><div class="res"><a href="https://www.graphpad.com/quickcalcs/molarityform/" target="_blank" rel="noopener">Molarity calculator</a><span>GraphPad QuickCalcs</span></div></div>
+        </article><article class="tile">
+          <h3 class="h-card">Imaging Software</h3>
+          <div class="res-group"><div class="res"><a href="https://imagej.net/software/fiji/" target="_blank" rel="noopener">Fiji</a><span>Image processing and analysis</span></div><div class="res"><a href="https://micro-manager.org/" target="_blank" rel="noopener">Micro-Manager</a><span>Microscope control</span></div><div class="res"><a href="https://www.openmicroscopy.org/bio-formats/" target="_blank" rel="noopener">Bio-Formats</a><span>Proprietary format reader</span></div></div>
+        </article><article class="tile">
+          <h3 class="h-card">Optics &amp; Community</h3>
+          <div class="res-group"><div class="res"><a href="https://www.thorlabs.com/" target="_blank" rel="noopener">Thorlabs</a><span>Optomechanics</span></div><div class="res"><a href="https://www.edmundoptics.com/" target="_blank" rel="noopener">Edmund Optics</a><span>Optical components</span></div><div class="res"><a href="https://www.newport.com/" target="_blank" rel="noopener">Newport</a><span>Photonics hardware</span></div><div class="res"><a href="https://forum.image.sc/" target="_blank" rel="noopener">image.sc forum</a><span>Bioimage analysis community</span></div><div class="res"><a href="https://lists.umn.edu/cgi-bin/wa?A0=confocalmicroscopy" target="_blank" rel="noopener">Confocal list</a><span>Microscopy mailing list</span></div></div>
+        </article>
+      </div>
       <p class="res-note">Need a plasmid, a protocol, or help with a biosensor or optogenetic tool? Email <a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a>.</p>
     </div>
   </section>
@@ -89,17 +103,5 @@
 </footer>
 
 <script src="/assets/nav.js"></script>
-<script type="module">
-import { getResources, hydrate, esc } from '/assets/wix.js';
-hydrate(document.getElementById('resources'), getResources, items => {
-  const groups = {};
-  for (const r of items) (groups[r.category] ||= []).push(r);
-  return '<div class="grid" style="--cols:' + Math.min(Object.keys(groups).length, 4) + '">' +
-    Object.entries(groups).map(([cat, rows]) => `<article class="tile">
-      <h3 class="h-card">${esc(cat)}</h3>
-      <div class="res-group">${rows.map(r => `<div class="res"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a><span>${esc(r.note)}</span></div>`).join('')}</div>
-    </article>`).join('') + '</div>';
-});
-</script>
 </body>
 </html>

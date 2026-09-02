@@ -1,0 +1,106 @@
+[
+  {
+    "sortOrder": 0,
+    "nameEn": "Bei Liu",
+    "nameZh": "刘贝",
+    "role": "Principal Investigator · Assistant Professor",
+    "bio": "College of Future Technology, Peking University. National Biomedical Imaging Center.",
+    "photo": "/assets/img/pi.jpg"
+  },
+  {
+    "sortOrder": 10,
+    "nameEn": "Kun Zhang",
+    "nameZh": "张堃",
+    "role": "Lab Manager",
+    "bio": "Kun joined the lab in spring 2023.",
+    "photo": "/assets/img/people/kun-zhang.jpg"
+  },
+  {
+    "sortOrder": 20,
+    "nameEn": "Peiyang Li",
+    "nameZh": "李沛洋",
+    "role": "PhD Student",
+    "bio": "Peiyang started in fall 2023 and majors in Biomedical Engineering.",
+    "photo": "/assets/img/people/peiyang-li.jpg"
+  },
+  {
+    "sortOrder": 30,
+    "nameEn": "Baoyi Wang",
+    "nameZh": "王抱一",
+    "role": "PhD Student",
+    "bio": "Baoyi started in fall 2023 after studying Biomedical Engineering at Huazhong University of Science and Technology.",
+    "photo": "/assets/img/people/baoyi-wang.jpg"
+  },
+  {
+    "sortOrder": 40,
+    "nameEn": "Jingyu Luo",
+    "nameZh": "罗靖禹",
+    "role": "PhD Student",
+    "bio": "Jingyu started in fall 2023 and develops high-throughput approaches to engineer biosensors.",
+    "photo": "/assets/img/people/jingyu-luo.jpg"
+  },
+  {
+    "sortOrder": 50,
+    "nameEn": "Xinyu Zhang",
+    "nameZh": "张鑫雨",
+    "role": "PhD Student",
+    "bio": "Xinyu joined in 2024 and is interested in using light to control cell signaling and phase separation.",
+    "photo": "/assets/img/people/xinyu-zhang.jpg"
+  },
+  {
+    "sortOrder": 60,
+    "nameEn": "Yanhua Lyu",
+    "nameZh": "吕妍骅",
+    "role": "PhD Student",
+    "bio": "Yanhua joined in 2024 and is interested in fluorescence lifetime imaging.",
+    "photo": "/assets/img/people/yanhua-lyu.jpg"
+  },
+  {
+    "sortOrder": 70,
+    "nameEn": "Meilin Li",
+    "nameZh": "李美霖",
+    "role": "PhD Student",
+    "bio": "Meilin joined the lab in 2024.",
+    "photo": "/assets/img/people/meilin-li.jpg"
+  },
+  {
+    "sortOrder": 80,
+    "nameEn": "Xinwei Chen",
+    "nameZh": "陈欣玮",
+    "role": "Undergraduate",
+    "bio": "Xinwei studies Biomedical Engineering and develops imaging techniques for advanced biosensor imaging.",
+    "photo": "/assets/img/people/xinwei-chen.jpg"
+  },
+  {
+    "sortOrder": 90,
+    "nameEn": "Qianwen Jin",
+    "nameZh": "靳茜雯",
+    "role": "Incoming PhD Student",
+    "bio": "Qianwen will join as a PhD student in 2025 and is interested in protein-directed evolution.",
+    "photo": "/assets/img/people/qianwen-jin.jpg"
+  },
+  {
+    "sortOrder": 100,
+    "nameEn": "Yuan Yao",
+    "nameZh": "姚远",
+    "role": "Incoming PhD Student",
+    "bio": "Yuan will join as a PhD student in 2025 and is interested in phase separation.",
+    "photo": "/assets/img/people/yuan-yao.jpg"
+  },
+  {
+    "sortOrder": 110,
+    "nameEn": "Shenyi Lu",
+    "nameZh": "鲁申怡",
+    "role": "Undergraduate",
+    "bio": "Shenyi is a sophomore majoring in Life Sciences.",
+    "photo": "/assets/img/people/shenyi-lu.jpg"
+  },
+  {
+    "sortOrder": 120,
+    "nameEn": "Lukai Lin",
+    "nameZh": "林路凯",
+    "role": "Undergraduate",
+    "bio": "Lukai is a sophomore studying Bioinformatics at the School of Life Sciences.",
+    "photo": "/assets/img/people/lukai-lin.jpg"
+  }
+]

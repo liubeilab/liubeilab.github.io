@@ -123,12 +123,18 @@
     <div class="wrap recent">
       <div>
         <p class="eyebrow">Latest paper</p>
-        <div id="latest-pub" data-loading></div>
+        <h3 class="pub__title" style="font-size:1.34rem">Live-cell biosensors based on the fluorescence lifetime of environment-sensing dyes</h3>
+        <p class="pub__authors" style="margin-top:8px">Mehl BP, Vairaprakash P, Li L, Hinde E, MacNevin CJ, Hsu CW, Gratton E, Liu B*, Hahn KM*</p>
+        <p class="pub__journal">Cell Reports Methods 4, 100734</p>
+        <a class="pub__doi" href="https://doi.org/10.1016/j.crmeth.2024.100734" target="_blank" rel="noopener">10.1016/j.crmeth.2024.100734</a>
         <p style="margin-top:22px"><a class="btn" href="/publications/">All publications</a></p>
       </div>
       <div>
         <p class="eyebrow">From the lab</p>
-        <div id="latest-post" data-loading></div>
+        <p class="meta">6 July 2023</p>
+        <h3 class="pub__title" style="font-size:1.34rem;margin-top:8px">Lab retreat together with Huang lab</h3>
+        <p class="body" style="margin-top:8px">To celebrate the ending of spring semester and the first year of Liu lab, we organized a joint lab retreat with Xiaoshuai Huang lab. Lots...</p>
+        <a class="pub__doi" href="/news/lab-retreat-together-with-huang-lab/">Read the post</a>
         <p style="margin-top:22px"><a class="btn" href="/news/">More news</a></p>
       </div>
     </div>
@@ -166,20 +172,5 @@
 </footer>
 
 <script src="/assets/nav.js"></script>
-<script type="module">
-import { getPublications, getPosts, hydrate, formatDate, esc } from '/assets/wix.js';
-hydrate(document.getElementById('latest-pub'),
-  async () => (await getPublications()).filter(p => p.featured).slice(0, 1),
-  ([p]) => `<h3 class="pub__title" style="font-size:1.34rem">${esc(p.title)}</h3>
-    <p class="pub__authors" style="margin-top:8px">${esc(p.authors)}</p>
-    <p class="pub__journal">${esc(p.journal)}</p>
-    ${p.doi ? `<a class="pub__doi" href="https://doi.org/${esc(p.doi)}" target="_blank" rel="noopener">${esc(p.doi)}</a>` : ''}`);
-hydrate(document.getElementById('latest-post'),
-  async () => (await getPosts(4)).slice(0, 1),
-  ([p]) => `<p class="meta">${esc(formatDate(p.date))}</p>
-    <h3 class="pub__title" style="font-size:1.34rem;margin-top:8px">${esc(p.title)}</h3>
-    ${p.excerpt ? `<p class="body" style="margin-top:8px">${esc(p.excerpt)}</p>` : ''}
-    <a class="pub__doi" href="${esc(p.url)}" target="_blank" rel="noopener">Read the post</a>`);
-</script>
 </body>
 </html>
