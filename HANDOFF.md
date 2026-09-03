@@ -69,6 +69,8 @@ A sentence or two of body text, shown on the timeline.
   an **overlapping "stack"**: on desktop they fan out slightly and the one you
   hover lifts and enlarges to the front; on mobile they fall back to a column.
   Sizing for 2–6 photos is handled by `data-count` rules in `styles.css`.
+- **Click any news photo** to open it **full-screen** (a lightbox,
+  `assets/lightbox.js`); close with the ✕, click-outside, or Escape.
 - **Slugs / filenames are internal only** (never appear in URLs) — name them
   anything readable. Keep titles/text in **English**.
 
