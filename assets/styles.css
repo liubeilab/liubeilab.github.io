@@ -662,6 +662,9 @@ img.toolfig { object-fit: cover; }
 }
 
 /* ---- Lightbox: click a news photo to view it full-screen ---- */
+/* Must beat the display:flex below, or the `hidden` attribute is ignored and
+   the overlay shows on load. */
+.lightbox[hidden] { display: none; }
 .lightbox {
   position: fixed; inset: 0; z-index: 1000;
   display: flex; align-items: center; justify-content: center; padding: 4vmin;
