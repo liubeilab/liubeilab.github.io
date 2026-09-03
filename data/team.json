@@ -142,5 +142,13 @@
     "role": "PhD Student",
     "bio": "Xinyi joined as a PhD student in 2026 and works on AI-driven antibody design.",
     "photo": "/assets/img/people/xinyi-liu.jpg"
+  },
+  {
+    "sortOrder": 190,
+    "nameEn": "Yan Zeng",
+    "nameZh": "曾燕",
+    "role": "Undergraduate",
+    "bio": "Yan joined in summer 2026, from Xiamen University, to complete an undergraduate thesis project in the lab.",
+    "photo": "/assets/img/people/yan-zeng.jpg"
   }
 ]
