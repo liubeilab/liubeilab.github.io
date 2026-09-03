@@ -293,11 +293,14 @@ p { margin: 0; }
 .pi__body > * + * { margin-top: 14px; }
 .pi__zh { font-family: var(--mono); font-size: 1.02rem; color: var(--accent); }
 
-/* Masonry gallery: photos shown whole, at their own aspect ratio, so the
-   column heights vary and the section feels alive instead of gridded. */
-.people { columns: 300px; column-gap: clamp(16px, 2vw, 26px); }
+/* Masonry as flex columns, built by assets/people.js — photos shown whole, at
+   their own aspect ratio. Flex columns (not CSS `columns`) avoid a multi-column
+   repaint glitch that duplicated/dropped cards on scroll, and let the script
+   shuffle the order per visit. The grid is the no-JS fallback. */
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: clamp(16px, 2vw, 26px); align-items: start; }
+.people--js { display: flex; align-items: flex-start; gap: clamp(16px, 2vw, 26px); }
+.people__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: clamp(16px, 2vw, 26px); }
 .person {
-  break-inside: avoid; margin: 0 0 clamp(16px, 2vw, 26px);
   border: 1px solid var(--line); overflow: hidden;
   background: linear-gradient(180deg, oklch(0.200 0.030 260 / 0.96), oklch(0.160 0.028 260 / 0.98));
   transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
