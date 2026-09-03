@@ -596,12 +596,16 @@ img.toolfig { object-fit: cover; }
 .tl-item:nth-child(even) .tl-dot { left: -8px; }
 
 .tl-card {
-  border: 1px solid var(--line); overflow: hidden;
+  border: 1px solid var(--line);
   background: linear-gradient(180deg, oklch(0.200 0.030 260 / 0.96), oklch(0.160 0.028 260 / 0.98));
 }
-/* Every photo shown whole; several stack with a thin divider between them. */
-.tl-media { display: grid; gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
-.tl-media img { width: 100%; height: auto; display: block; }
+/* A single photo is shown whole. */
+.tl-media { border-bottom: 1px solid var(--line); }
+.tl-media > img { width: 100%; height: auto; display: block; }
+/* Several photos: the overlapping fan (reuses .photo-stack); pad the media so
+   the hover-lift has room and is not clipped. */
+.tl-media--stack { padding: 16px 14px 20px; overflow: visible; }
+.tl-media--stack .photo-stack { margin: 0; }
 .tl-content { display: block; padding: 18px 20px 22px; }
 .tl-date { display: block; font-family: var(--mono); font-size: 0.73rem; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
 .tl-title { display: block; font-family: var(--display); font-size: 1.24rem; line-height: 1.25; margin-top: 8px; color: var(--ink); }
@@ -622,7 +626,7 @@ img.toolfig { object-fit: cover; }
 /* ---- Photo stack (multi-photo posts): a pile you fan through on hover ---- */
 .photo-stack { display: flex; justify-content: center; align-items: flex-start; margin: 8px 0 12px; padding: 6px 0; }
 .photo-stack__item {
-  position: relative; flex: 0 0 auto; width: min(58%, 430px); margin-left: -16%;
+  position: relative; flex: 0 0 auto; width: 60%; margin-left: -28%;
   border: 1px solid var(--line); background: var(--panel); overflow: hidden;
   box-shadow: 0 16px 34px -20px rgba(0,0,0,.85);
   transform: rotate(var(--r, 0deg)); transform-origin: center bottom;
@@ -650,8 +654,9 @@ img.toolfig { object-fit: cover; }
 
 /* Photo stack — keep more than two photos inside the reading column (desktop). */
 @media (min-width: 721px) {
-  .photo-stack[data-count="3"] .photo-stack__item { width: 39%; }
-  .photo-stack[data-count="4"] .photo-stack__item { width: 33%; }
-  .photo-stack[data-count="5"] .photo-stack__item { width: 28%; }
-  .photo-stack[data-count="6"] .photo-stack__item { width: 25%; }
+  .photo-stack[data-count="3"] .photo-stack__item { width: 42%; margin-left: -24%; }
+  .photo-stack[data-count="4"] .photo-stack__item { width: 34%; margin-left: -20%; }
+  .photo-stack[data-count="5"] .photo-stack__item { width: 28%; margin-left: -16%; }
+  .photo-stack[data-count="6"] .photo-stack__item { width: 24%; margin-left: -14%; }
+  .photo-stack[data-count] .photo-stack__item:first-child { margin-left: 0; }
 }

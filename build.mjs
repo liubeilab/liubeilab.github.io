@@ -199,11 +199,19 @@ const timelineItem = (p) => {
   const bodyImgs = [...p.body.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1].trim());
   const gallery = [...new Set([p.cover, ...bodyImgs].filter(Boolean))];
   const text = markdown(p.body, { dropImages: true });
+  /* One photo: shown whole. Several: an overlapping stack you fan through on
+     hover (pointing at one brings it forward). Falls back to a plain column on
+     touch/narrow screens. */
+  const media = gallery.length > 1
+    ? `<div class="tl-media tl-media--stack"><div class="photo-stack" data-count="${gallery.length}">${gallery.map((src) => `<figure class="photo-stack__item"><img src="${esc(src)}" alt="" loading="lazy" /></figure>`).join('')}</div></div>`
+    : gallery.length === 1
+      ? `<div class="tl-media"><img src="${esc(gallery[0])}" alt="" loading="lazy" /></div>`
+      : '';
   return `
   <li class="tl-item">
     <span class="tl-dot" aria-hidden="true"></span>
     <div class="tl-card">
-      ${gallery.length ? `<div class="tl-media" data-count="${gallery.length}">${gallery.map((src) => `<img src="${esc(src)}" alt="" loading="lazy" />`).join('')}</div>` : ''}
+      ${media}
       <div class="tl-content">
         <span class="tl-date">${esc(formatDate(p.date))}</span>
         <h2 class="tl-title">${esc(p.title)}</h2>
