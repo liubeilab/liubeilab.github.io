@@ -20,6 +20,10 @@ const resources    = readJSON('data/resources.json').sort((a, b) => a.sortOrder 
 
 /* News: one Markdown file per post, `<name>.md`, with YAML-ish front matter. */
 function parseFrontMatter(raw) {
+  // Normalise BOM and CRLF/CR so the front-matter fences match regardless of
+  // how the file was saved (Windows/git autocrlf produce \r\n).
+  if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+  raw = raw.replace(/\r\n?/g, '\n');
   const m = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!m) return { meta: {}, body: raw };
   const meta = {};
