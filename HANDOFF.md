@@ -81,6 +81,9 @@ A sentence or two of body text, shown on the timeline.
 - The People page is a **masonry gallery** — photos shown **whole** (uncropped),
   columns of varied height. Add a member's photo to `assets/img/people/` and
   point `photo` at it.
+- The masonry is built by `assets/people.js` (balanced **flex columns**, not CSS
+  `columns`, which had a repaint glitch). It also **shuffles the member order on
+  every visit**, so no student is always first.
 - Alumni render as small thumbnails from `data/alumni.json`.
 
 ## Preparing images
