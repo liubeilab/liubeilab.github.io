@@ -641,7 +641,7 @@ img.toolfig { object-fit: cover; }
 /* settle the pile straight when the reader engages with it */
 .photo-stack:hover .photo-stack__item { --r: 0deg; }
 /* the photo under the cursor lifts clear of the rest */
-.photo-stack__item:hover { transform: translateY(-14px) scale(1.06); z-index: 20; box-shadow: 0 28px 52px -22px rgba(0,0,0,.9); }
+.photo-stack__item:hover { transform: translateY(-8px) scale(1.3); z-index: 20; box-shadow: 0 30px 56px -20px rgba(0,0,0,.9); }
 .photo-stack__hint { text-align: center; margin: 0 0 30px; opacity: .8; }
 
 @media (hover: none) { .photo-stack__hint { display: none; } }
