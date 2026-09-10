@@ -45,7 +45,9 @@ const posts = readdirSync(join(OUT, 'news'))
     return { slug: f.replace(/\.md$/, ''), title: meta.title || '', date: meta.date || '',
              excerpt: meta.excerpt || '', cover: meta.cover || '', body: body.trim() };
   })
-  .sort((a, b) => (a.date < b.date ? 1 : -1));
+  // Newest first; for posts sharing a date, break the tie by slug (descending)
+  // so the order is deterministic instead of readdir-dependent.
+  .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : b.slug.localeCompare(a.slug)));
 
 /* ---------------- helpers ---------------- */
 
