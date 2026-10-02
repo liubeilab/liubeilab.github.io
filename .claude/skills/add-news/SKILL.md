@@ -9,11 +9,12 @@ argument-hint: [what happened, or leave empty to look at the newest photos]
 Bei's note: $ARGUMENTS
 
 1. `git pull` in the site repo.
-2. **Find the photos** in `..\news\` (the `lab page\news` folder). New ones
-   are those not yet used: newest by modified time, and/or whose filename
-   date is after the newest post in `news/*.md`. The filename gives the date
-   (`2026.9.26 - hiking.jpg` → `2026-09-26`). If several dates or events are
-   mixed, list them and ask which to post. Look at every photo.
+2. **Find the photos** in the inbox `..\news\` (the `lab page\news` folder).
+   Every file directly in it is new; already-published photos live in
+   `..\news\processed\` — never reuse those unless Bei asks. The filename
+   gives the date (`2026.9.26 - hiking.jpg` → `2026-09-26`). If the inbox holds
+   several dates/events, list them and ask which to post (one post per event).
+   If the inbox is empty, ask Bei to drop the photos there. Look at every photo.
 3. **Draft the post**: English title, one-line excerpt, 1–3 sentences of body.
    Match the tone of recent posts (`news/*.md`, newest first). Facts come only
    from Bei's note, the photos (flyers, banners) and Bei's answers — never
@@ -31,6 +32,9 @@ Bei's note: $ARGUMENTS
 6. Publish with the routine in CLAUDE.md: build, `node tools/check.mjs`
    (0 errors), commit `News: <title> (<date>)`, push, watch the Actions run,
    verify the title and each photo URL live (`?v=<random>`).
-7. If the `..\news\processed\` folder exists, move the used photos there.
+7. **Only after it's confirmed live**, move the used originals from `..\news\`
+   to `..\news\processed\` and append one line per photo to
+   `..\news\processed\_log.txt`: `YYYY-MM-DD | <original file> | news/<slug>.md`.
+   Photos Bei decided not to use stay in the inbox — mention them.
 8. Report: title, date, which photo is the cover, confirmed live. End with the
    shortcut reminder from CLAUDE.md.

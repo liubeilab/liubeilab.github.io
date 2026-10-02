@@ -22,5 +22,6 @@ description: Show Bei the shortcuts available for maintaining the Liu Lab websit
 
 2. Then run a quick health check silently: `git pull`, `node build.mjs`,
    `node tools/check.mjs`, and the latest Actions run status (public API, see
-   CLAUDE.md). Report in one or two lines: errors/warnings count and whether
-   the last deploy succeeded.
+   CLAUDE.md), and count files waiting in `..\news\` and `..\member\` (not in
+   `processed\`). Report in one or two lines: errors/warnings count, whether
+   the last deploy succeeded, and any photos waiting to be posted.

@@ -10,9 +10,15 @@ playbook; this file holds the rules and lessons for Claude.
 ```
 Documents\Cowork\lab page\
 ├── site\     ← this repo (the permanent working copy — never clone to Temp)
-├── news\     ← Bei drops event photos here, named by date: "2026.9.26 - hiking.jpg"
-└── member\   ← new-member portraits, named by Chinese name: "马莉雅.jpg"
+├── news\     ← INBOX: Bei drops event photos here, named by date: "2026.9.26 - hiking.jpg"
+│   └── processed\   ← already published (+ _log.txt: original → post)
+└── member\   ← INBOX: new-member portraits, named by Chinese name: "马莉雅.jpg"
+    └── processed\   ← already published (+ _log.txt)
 ```
+
+Files directly in an inbox = not yet on the site. After a post/member is
+**confirmed live**, move its originals to `processed\` and append to
+`_log.txt`. Never re-post from `processed\` unless Bei asks.
 
 ## Shortcuts (skills in `.claude/skills/`) — remind Bei every time
 
@@ -165,7 +171,8 @@ Doing these one at a time, each approved by Bei:
        a broken build (2026-10-02)
 4. [x] Shortcuts: `/add-news`, `/add-paper`, `/add-member`, `/move-to-alumni`,
        `/site-check`, `/lab-help` (2026-10-02)
-5. [ ] Photo inbox → `processed/` convention
+5. [x] Photo inbox → `processed/` convention (2026-10-02; all 30 earlier
+       photos verified published and moved)
 6. [ ] Content: one consistent research taxonomy across Home/Research/
        Technologies/Join Us; merge Technologies into Research; richer
        bios + PI profile; bold lab members + Scholar/ORCID on Publications;

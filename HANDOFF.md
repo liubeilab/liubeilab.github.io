@@ -48,6 +48,11 @@ Open Claude Code in the **`Documents\Cowork\lab page\site`** folder, then type:
 | `/site-check` | Health check: checks, last deploy, live pages | `/site-check` |
 | `/lab-help` | Shows this list | `/lab-help` |
 
+**Photo inboxes:** drop new photos directly in `lab page\news` or
+`lab page\member`. Once they're live, Claude moves them into the `processed`
+subfolder and notes in `processed\_log.txt` which post or person each went to,
+so nothing is ever posted twice. An empty inbox = everything is published.
+
 Each one follows the same steps every time (draft for approval when needed,
 resize photos, build, check, publish, confirm live). They live in
 `.claude/skills/`; the helper for papers is `tools/add-paper.mjs`.

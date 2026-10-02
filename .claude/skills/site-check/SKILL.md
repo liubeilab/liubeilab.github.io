@@ -11,7 +11,9 @@ description: Health check of the Liu Lab website — run the build and all check
 3. Live pages: request each of `/ /research/ /technologies/ /open-science/
    /publications/ /people/ /join-us/ /news/` on `https://www.liubeilab.com`
    with `?v=<random>`; all must be 200.
-4. Report to Bei in plain words: errors (must fix — offer to fix), warnings
+4. Inboxes: list files waiting directly in `..\news\` and `..\member\`
+   (not in `processed\`) — these are photos not yet on the site.
+5. Report to Bei in plain words: photos waiting in the inboxes, errors (must fix — offer to fix), warnings
    (explain each briefly; offer fixes), last deploy result, live status.
    Don't change anything without Bei's go-ahead.
-5. End with the shortcut reminder from CLAUDE.md.
+6. End with the shortcut reminder from CLAUDE.md.
