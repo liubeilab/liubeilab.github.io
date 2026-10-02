@@ -1,0 +1,15 @@
+#!/bin/sh
+# Runs before every commit (enabled with: git config core.hooksPath tools/hooks).
+# Rebuilds the site, makes sure the regenerated pages are part of the commit,
+# then runs the pre-publish checks. Any failure stops the commit.
+
+node build.mjs > /dev/null || { echo "pre-commit: node build.mjs failed"; exit 1; }
+
+if ! git diff --quiet -- '*.html' sitemap.xml robots.txt CNAME .nojekyll; then
+  echo "pre-commit: the rebuild changed generated pages that aren't staged:"
+  git diff --name-only -- '*.html' sitemap.xml robots.txt CNAME .nojekyll | sed 's/^/  /'
+  echo "Stage them (git add -A) and commit again."
+  exit 1
+fi
+
+node tools/check.mjs || exit 1

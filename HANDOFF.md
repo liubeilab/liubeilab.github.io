@@ -7,7 +7,7 @@ Companion to `README.md`; this file is the practical playbook.
 
 - A **static site** served by **GitHub Pages** from `liubeilab/liubeilab.github.io`
   (branch `main`, custom domain via the `CNAME` file → `www.liubeilab.com`).
-- **No Wix, no server, no database, no CI.** Every piece of content is a file in
+- **No Wix, no server, no database.** Every piece of content is a file in
   this repo; one Node script (`build.mjs`) generates all the pages.
 - It used to pull content live from a Wix CMS. That was fully **migrated into the
   repo** — the site no longer depends on Wix or anything external (except a
@@ -16,16 +16,21 @@ Companion to `README.md`; this file is the practical playbook.
 ## Update anything in three steps
 
 1. Edit a data file or a news post (see below).
-2. Run the build:
+2. Run the build and the checks:
    ```bash
-   node build.mjs
+   node build.mjs && node tools/check.mjs
    ```
-   Node 18+ required. **No dependencies to install.**
+   Node 18+ required. **No dependencies to install.** The check must say
+   `0 error(s)`; it explains anything it finds (missing photo, bad date,
+   broken link, duplicate paper …).
 3. Commit and push:
    ```bash
    git add -A && git commit -m "..." && git push
    ```
-   GitHub Pages redeploys in about a minute.
+   A pre-commit hook re-runs the build + check and refuses a bad commit. On
+   GitHub, the "Check and deploy" Action runs everything again and only then
+   publishes (about 1–2 minutes). If it fails, the previous version stays live
+   and GitHub emails you; see the **Actions** tab of the repo.
 
 With Claude Code you can just say what changed ("add this paper", "add a news
 post about X with these photos") and it will do steps 1–3.

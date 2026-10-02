@@ -1,0 +1,54 @@
+# Check, then publish. Nothing reaches www.liubeilab.com unless the build is
+# reproducible from source and tools/check.mjs passes; a failed run leaves the
+# previous version live. Requires Settings → Pages → Source: "GitHub Actions".
+name: Check and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build
+        run: node build.mjs
+      - name: Committed pages match the source
+        run: |
+          if ! git diff --quiet; then
+            git diff --stat
+            echo "::error::Generated pages are out of date. Run node build.mjs and commit the result."
+            exit 1
+          fi
+      - name: Pre-publish checks
+        run: node tools/check.mjs
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: check
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

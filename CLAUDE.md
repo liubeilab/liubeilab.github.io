@@ -21,12 +21,30 @@ Documents\Cowork\lab page\
    `assets/*`. Never hand-edit generated `*/index.html` / `index.html` /
    `404.html` / `sitemap.xml`.
 3. `node build.mjs` (Node 18+, no dependencies). It must finish without errors.
-4. Check the generated output contains the change (grep the built HTML).
-5. Commit with a clear message (`News: …`, `People: …`, `Publications: …`,
-   `Fix: …`), then `git push`.
+4. `node tools/check.mjs` — must report **0 errors**. Also confirm the built
+   HTML contains the change (grep it).
+5. `git add -A`, commit with a clear message (`News: …`, `People: …`,
+   `Publications: …`, `Fix: …`), then `git push`.
 6. Verify live: poll `https://www.liubeilab.com/<page>/?v=<random>` until the
-   change appears (HTML ~1 min; CSS/JS edge-cached up to ~10 min).
+   change appears (deploy ~1–2 min; CSS/JS edge-cached up to ~10 min).
 7. Tell Bei what changed and that it is confirmed live.
+
+## Safety net (don't bypass)
+
+- **`tools/check.mjs`** validates sources and built pages: news front matter,
+  real dates, every photo/link exists (**case-sensitive** — Windows ignores
+  case, GitHub Pages doesn't), duplicate papers/DOIs, PI first, image sizes,
+  leaked front matter, timeline = number of posts. Warnings don't block.
+  When a new kind of mistake happens, **add a check for it here**.
+- **Pre-commit hook** (`tools/hooks/pre-commit`, enabled by
+  `git config core.hooksPath tools/hooks` — set it again on any fresh clone)
+  rebuilds, refuses the commit if regenerated pages aren't staged, then runs
+  the check. Never use `--no-verify`.
+- **GitHub Action** (`.github/workflows/deploy.yml`) rebuilds on GitHub,
+  fails if committed pages ≠ fresh build, runs the check, and only then
+  deploys. A failed run keeps the previous version live. Pages source must be
+  "GitHub Actions". Check runs: github.com/liubeilab/liubeilab.github.io/actions
+  (no `gh` CLI here — read the run page in the browser or ask Bei).
 
 ## Rules (from Bei)
 
@@ -115,7 +133,8 @@ Doing these one at a time, each approved by Bei:
 
 1. [x] Permanent working copy in `Cowork\lab page\site`
 2. [x] This CLAUDE.md
-3. [ ] Pre-publish check script + GitHub Action that blocks a broken build
+3. [x] Pre-publish check script + pre-commit hook + GitHub Action that blocks
+       a broken build (2026-10-02)
 4. [ ] Slash commands: `/add-paper <DOI>`, `/add-news`, `/add-member`
 5. [ ] Photo inbox → `processed/` convention
 6. [ ] Content: one consistent research taxonomy across Home/Research/
