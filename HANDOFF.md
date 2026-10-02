@@ -67,7 +67,8 @@ resize photos, build, check, publish, confirm live). They live in
 | Resources | `data/resources.json` | grouped by `category` on the Open Science page |
 | News | `news/*.md` | one Markdown file per event (see below) |
 | Photos | `assets/img/{people,alumni,news}/` | plus hero/tool/mark art in `assets/img/` |
-| Page copy & design | `build.mjs`, `assets/styles.css` | the generated `*.html` are outputs — don't hand-edit |
+| Page wording | `pages/*.html` | one file per page: title/description at top, then the page HTML; `{{slots}}` are filled with generated content |
+| Design | `assets/styles.css`, `build.mjs` (page shell, generated parts) | the generated `*.html` are outputs — don't hand-edit |
 
 ## News (the timeline)
 
@@ -154,6 +155,6 @@ live only on your private dashboard:
 ## Don't
 
 - Don't hand-edit the generated `*.html` — they're overwritten on the next build.
-  Change `build.mjs`, `data/*`, or `news/*` and rebuild.
+  Change `pages/*`, `data/*`, `news/*` or `build.mjs` and rebuild.
 - Don't reintroduce Wix or any external content source — the site is
   self-contained on purpose.

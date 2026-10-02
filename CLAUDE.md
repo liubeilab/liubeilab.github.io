@@ -47,8 +47,8 @@ is read.)
 ## Every update, in order
 
 1. `git pull` first — the live repo may have changed.
-2. Edit **source only**: `data/*.json`, `news/*.md`, `build.mjs`,
-   `assets/*`. Never hand-edit generated `*/index.html` / `index.html` /
+2. Edit **source only**: `pages/*.html` (page wording), `data/*.json`,
+   `news/*.md`, `build.mjs` (logic, page shell), `assets/*`. Never hand-edit generated `*/index.html` / `index.html` /
    `404.html` / `sitemap.xml`.
 3. `node build.mjs` (Node 18+, no dependencies). It must finish without errors.
 4. `node tools/check.mjs` — must report **0 errors**. Also confirm the built
@@ -111,6 +111,16 @@ One or two sentences.
 Order is purely by `date` (newest first; same-date ties broken by slug).
 2+ photos render as an overlapping hover stack automatically.
 Visitor titles: be consistent — "Prof. Full Name visits PKU".
+Photo descriptions (alt text): default is the post title ("…, photo 2 of 3").
+To describe a photo specifically, use `coverAlt: "…"` in front matter or
+`![description](/assets/img/news/x.jpg)` — only with facts Bei gave.
+
+**Pages** — `pages/<name>.html`: front matter (`title`, `description`,
+optional `heroCss`) + the page body as HTML. Edit wording here. `{{slot}}`
+markers (e.g. `{{timeline}}`, `{{members}}`) are filled by `build.mjs`; an
+unknown slot stops the build. Nav order/URLs: `PAGES` and `NAV` in build.mjs.
+Link previews: every page uses `assets/img/share-card.jpg` (1200×630, made
+from the hero image + logo); News uses the newest event's cover.
 
 **Publications** — `data/publications.json`, newest first; new entry goes on
 top with `idx` = previous max + 1. Fields: `idx, year, title, authors,
@@ -177,6 +187,7 @@ Doing these one at a time, each approved by Bei:
        Technologies/Join Us; merge Technologies into Research; richer
        bios + PI profile; bold lab members + Scholar/ORCID on Publications;
        bilingual Join Us; consistent visitor titles
-7. [ ] Technical: alt text on news photos, `og:image` for link previews,
-       rename 14 legacy `a12b36_*` images, move page prose out of build.mjs
+7. [x] Technical (2026-10-02): page wording moved to `pages/*.html`
+       (output byte-identical), alt text everywhere, link-preview card +
+       JSON-LD, 21 legacy `a12b36_/556e2a_` images renamed, big photo resized
 8. [ ] Design: an image on the text-only pages; optional light mode

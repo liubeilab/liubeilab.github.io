@@ -169,6 +169,11 @@ for (const f of htmlFiles) {
     if (url.replace(/[?#].*$/, '').endsWith('/')) file = join(file, 'index.html');
     if (!exists(file)) err(f, `broken link ${url}`);
   }
+  for (const [img] of html.matchAll(/<img\b[^>]*>/g))
+    if (!/\salt="[^"]+"/.test(img)) err(f, `photo without a description (alt): ${img.slice(0, 90)}`);
+  const og = html.match(/<meta property="og:image" content="https:\/\/www\.liubeilab\.com(\/[^"]+)"/);
+  if (!og) err(f, 'no link-preview image (og:image)');
+  else if (!exists(siteFile(og[1]))) err(f, `link-preview image not found: ${og[1]}`);
 }
 if (existsSync(join(ROOT, 'news/index.html'))) {
   const html = read('news/index.html');

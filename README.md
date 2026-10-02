@@ -73,11 +73,13 @@ on GitHub's side — always rebuild after editing content so they stay in sync.
 ## Structure
 
 ```
-build.mjs           generates every page from data/ + news/ + the page copy here
+build.mjs           generates every page from pages/ + data/ + news/
+pages/*.html        the wording of each page (front matter + HTML, {{slots}} filled by build.mjs)
 data/*.json         publications, team, alumni, resources
 news/*.md           one news post each
 assets/styles.css   the whole design system
 assets/nav.js       mobile navigation
+tools/              check.mjs (pre-publish checks), add-paper.mjs, resize-photo.ps1, hooks/
 assets/img/         hero + tool art, institutional marks, people/ alumni/ news/ photos
 ```
 

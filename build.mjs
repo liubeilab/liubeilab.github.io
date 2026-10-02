@@ -43,7 +43,8 @@ const posts = readdirSync(join(OUT, 'news'))
   .map((f) => {
     const { meta, body } = parseFrontMatter(readFileSync(join(OUT, 'news', f), 'utf8'));
     return { slug: f.replace(/\.md$/, ''), title: meta.title || '', date: meta.date || '',
-             excerpt: meta.excerpt || '', cover: meta.cover || '', body: body.trim() };
+             excerpt: meta.excerpt || '', cover: meta.cover || '', coverAlt: meta.coverAlt || '',
+             body: body.trim() };
   })
   // Newest first; for posts sharing a date, break the tie by slug (descending)
   // so the order is deterministic instead of readdir-dependent.
@@ -116,7 +117,21 @@ const NAV = [
   ['/news/',         'News',            'news'],
 ];
 
-const shell = ({ key, path, title, desc, body, heroCss = '' }) => `<!doctype html>
+/* Link previews (WeChat, Slack, email …): every page shares the branded card
+   (assets/img/share-card.jpg, 1200×630) unless it passes its own `image`. */
+const SHARE_CARD = '/assets/img/share-card.jpg';
+const ORG_JSONLD = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ResearchOrganization',
+  name: 'Liu Lab',
+  url: 'https://www.liubeilab.com/',
+  logo: 'https://www.liubeilab.com/assets/img/logo.png',
+  email: 'beiliu@pku.edu.cn',
+  parentOrganization: { '@type': 'CollegeOrUniversity', name: 'Peking University' },
+  sameAs: ['https://github.com/liubeilab'],
+});
+
+const shell = ({ key, path, title, desc, body, heroCss = '', image = SHARE_CARD }) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -127,6 +142,14 @@ const shell = ({ key, path, title, desc, body, heroCss = '' }) => `<!doctype htm
 <meta property="og:title" content="${title}" />
 <meta property="og:description" content="${desc}" />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="Liu Lab" />
+<meta property="og:url" content="https://www.liubeilab.com${path}" />
+<meta property="og:image" content="https://www.liubeilab.com${esc(image)}" />${image === SHARE_CARD ? `
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />` : ''}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://www.liubeilab.com${esc(image)}" />${key === 'home' ? `
+<script type="application/ld+json">${ORG_JSONLD}</script>` : ''}
 <link rel="icon" href="/assets/img/mark.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -194,16 +217,22 @@ const pubEntry = (p) => `
    motion are handled by assets/timeline.js; without it the items simply show as
    a static list. */
 const timelineItem = (p) => {
-  const bodyImgs = [...p.body.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1].trim());
-  const gallery = [...new Set([p.cover, ...bodyImgs].filter(Boolean))];
+  /* Photo descriptions (alt text): `coverAlt:` in front matter or the text in
+     ![this](…); otherwise the post title, numbered when there are several. */
+  const photos = new Map();
+  if (p.cover) photos.set(p.cover, p.coverAlt);
+  for (const [, alt, src] of p.body.matchAll(/!\[([^\]]*)\]\(([^)]+)\)/g))
+    if (!photos.has(src.trim())) photos.set(src.trim(), alt.trim());
+  const gallery = [...photos].map(([src, alt], i, all) =>
+    ({ src, alt: alt || (all.length > 1 ? `${p.title}, photo ${i + 1} of ${all.length}` : p.title) }));
   const text = markdown(p.body, { dropImages: true });
   /* One photo: shown whole. Several: an overlapping stack you fan through on
      hover (pointing at one brings it forward). Falls back to a plain column on
      touch/narrow screens. */
   const media = gallery.length > 1
-    ? `<div class="tl-media tl-media--stack"><div class="photo-stack" data-count="${gallery.length}">${gallery.map((src) => `<figure class="photo-stack__item"><img src="${esc(src)}" alt="" loading="lazy" /></figure>`).join('')}</div></div>`
+    ? `<div class="tl-media tl-media--stack"><div class="photo-stack" data-count="${gallery.length}">${gallery.map((g) => `<figure class="photo-stack__item"><img src="${esc(g.src)}" alt="${esc(g.alt)}" loading="lazy" /></figure>`).join('')}</div></div>`
     : gallery.length === 1
-      ? `<div class="tl-media"><img src="${esc(gallery[0])}" alt="" loading="lazy" /></div>`
+      ? `<div class="tl-media"><img src="${esc(gallery[0].src)}" alt="${esc(gallery[0].alt)}" loading="lazy" /></div>`
       : '';
   return `
   <li class="tl-item">
@@ -308,7 +337,7 @@ const slots = {
         </article>`).join(''),
   alumni: alumni.map((a) => `
         <article class="alumnus">
-          <img src="${esc(a.photo)}" alt="" loading="lazy" />
+          <img src="${esc(a.photo)}" alt="${esc(a.nameEn || a.nameZh)}" loading="lazy" />
           <div><b>${esc(a.nameZh || a.nameEn)}</b><span class="meta">${esc(a.years)}</span></div>
         </article>`).join(''),
 
@@ -328,6 +357,9 @@ function loadPage(name) {
 }
 
 const pages = PAGES.map(([name, key, path, file]) => ({ key, path, file, ...loadPage(name) }));
+// A shared News link previews the newest event's photo.
+const newsPage = pages.find((p) => p.key === 'news');
+if (latestPost?.cover) newsPage.image = latestPost.cover;
 
 /* ---------------- emit ---------------- */
 
