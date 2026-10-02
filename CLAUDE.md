@@ -43,8 +43,12 @@ Documents\Cowork\lab page\
 - **GitHub Action** (`.github/workflows/deploy.yml`) rebuilds on GitHub,
   fails if committed pages ≠ fresh build, runs the check, and only then
   deploys. A failed run keeps the previous version live. Pages source must be
-  "GitHub Actions". Check runs: github.com/liubeilab/liubeilab.github.io/actions
-  (no `gh` CLI here — read the run page in the browser or ask Bei).
+  "GitHub Actions" (switched 2026-10-02). After each push, watch the run via
+  the public API (no auth, no `gh` needed):
+  `curl -s "https://api.github.com/repos/liubeilab/liubeilab.github.io/actions/runs?per_page=1"`
+  → `status`/`conclusion`; per-step results at `…/actions/runs/<id>/jobs`.
+  A run takes ~1 min. If it fails, read the failing step and fix — the live
+  site is untouched meanwhile.
 
 ## Rules (from Bei)
 
