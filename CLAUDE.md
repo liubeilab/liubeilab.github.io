@@ -183,10 +183,23 @@ Doing these one at a time, each approved by Bei:
        `/site-check`, `/lab-help` (2026-10-02)
 5. [x] Photo inbox → `processed/` convention (2026-10-02; all 30 earlier
        photos verified published and moved)
-6. [ ] Content: one consistent research taxonomy across Home/Research/
-       Technologies/Join Us; merge Technologies into Research; richer
-       bios + PI profile; bold lab members + Scholar/ORCID on Publications;
-       bilingual Join Us; consistent visitor titles
+6. Content (each part drafted for Bei's approval first):
+   - [x] One research framework everywhere (2026-10-02, Bei approved):
+         **3 questions** — immune signalling, neuronal nuclear states,
+         mechanobiology; **4 tools** — See/Biosensors, Steer/Optogenetics,
+         Observe/Microscopy, Design/AI-based protein design (a tool, not a
+         question). Technologies merged into Research (`/technologies/` →
+         `/research/#tools` via REDIRECTS in build.mjs); menu = Home ·
+         Research · Publications · People · News · Open Science · Join Us.
+         Postdoc directions = the 3 tool areas (omics dropped). Home hero
+         has no logo row (logos only in the footer — Bei's call).
+   - [ ] Richer member bios + PI profile
+   - [ ] Publications: bold lab members, Google Scholar/ORCID link
+   - [ ] Bilingual (Chinese) Join Us
+   - [ ] Consistent visitor titles in News ("Prof. Full Name visits PKU")
+
+Local preview before publishing content changes: `node build.mjs && node
+tools/serve.mjs` → http://localhost:4000 (preview_start with that `url`).
 7. [x] Technical (2026-10-02): page wording moved to `pages/*.html`
        (output byte-identical), alt text everywhere, link-preview card +
        JSON-LD, 21 legacy `a12b36_/556e2a_` images renamed, big photo resized
