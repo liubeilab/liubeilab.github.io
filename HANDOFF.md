@@ -94,8 +94,14 @@ Resize new photos to about **1600 px on the longest side** before committing
 
 On this Windows machine there is **no ImageMagick and no Python on PATH**. Use
 PowerShell's built-in imaging (`System.Drawing`), and **honor EXIF orientation**
-(property id 274) so phone photos don't come out sideways. A ready-to-use
-resize script is in the project memory / session history.
+(property id 274) so phone photos don't come out sideways. Use the script in
+the repo:
+
+```powershell
+powershell -File tools/resize-photo.ps1 -In "..\news\2026.9.26 - hiking.jpg" -Out assets/img/news/lab-hike-2026-a.jpg
+```
+
+Claude's own rules and lessons learned live in `CLAUDE.md`.
 
 ## Analytics
 
@@ -112,9 +118,9 @@ live only on your private dashboard:
   so a CSS-only change can lag a few minutes before it's visible live.
 - **Push auth:** the machine's **Git Credential Manager** holds the `liubeilab`
   GitHub credential — pushes just work.
-- **Long path on Windows:** the repo folder name is long; if you re-clone, clone
-  to a **short path** (e.g. `C:\Users\...\Temp\lbsite`) to avoid `Filename too
-  long` (MAX_PATH) errors.
+- **Working copy:** the permanent clone is `Documents\Cowork\lab page\site`.
+  Start Claude Code sessions in `lab page` or `lab page\site`. Don't clone into
+  Temp or deep folders (Windows `Filename too long` / cleanup risk).
 - **Line endings:** git shows CRLF↔LF warnings on Windows; harmless (content is
   stored LF).
 
