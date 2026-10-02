@@ -1,5 +1,14 @@
 [
   {
+    "idx": 22,
+    "year": 2026,
+    "title": "Emerging trends of fluorescence lifetime imaging microscopy (FLIM): advances, challenges, and prospects",
+    "authors": "Wang B, Li M, Huang X, Liu B",
+    "journal": "Biophysics Reports 12(4), 225-239",
+    "doi": "10.52601/bpr.2025.250024",
+    "featured": false
+  },
+  {
     "idx": 21,
     "year": 2025,
     "title": "Combined learning for augmented super-resolution imaging",
