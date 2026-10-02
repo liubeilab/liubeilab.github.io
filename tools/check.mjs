@@ -147,7 +147,7 @@ for (const r of readJSON('data/resources.json')) {
 /* ---------------- images ---------------- */
 
 const sources = ['build.mjs', ...walk('assets').filter((f) => /\.(css|js)$/.test(f)),
-  ...walk('data'), ...newsFiles.map((f) => `news/${f}`)].map(read).join('\n');
+  ...walk('data'), ...walk('pages'), ...newsFiles.map((f) => `news/${f}`)].map(read).join('\n');
 for (const f of walk('assets/img')) {
   const kb = statSync(join(ROOT, f)).size / 1024;
   if (kb > 1024) err(f, `${Math.round(kb)} KB — resize with tools/resize-photo.ps1 (aim < 600 KB)`);
@@ -158,7 +158,8 @@ for (const f of walk('assets/img')) {
 
 /* ---------------- built output ---------------- */
 
-const htmlFiles = walk('.').filter((f) => f.endsWith('.html') && !/^(\.git|node_modules|tools)\//.test(f));
+// Built pages only — pages/*.html are sources (checked via the build itself).
+const htmlFiles = walk('.').filter((f) => f.endsWith('.html') && !/^(\.git|node_modules|tools|pages)\//.test(f));
 if (!existsSync(join(ROOT, 'news/index.html'))) err('news/index.html', 'missing — run node build.mjs first');
 for (const f of htmlFiles) {
   const html = read(f);
@@ -182,7 +183,7 @@ if (existsSync(join(ROOT, 'news/index.html'))) {
 
 /* ---------------- line endings ---------------- */
 
-for (const f of ['build.mjs', ...walk('data'), ...newsFiles.map((f) => `news/${f}`)])
+for (const f of ['build.mjs', ...walk('data'), ...walk('pages'), ...newsFiles.map((f) => `news/${f}`)])
   if (read(f).includes('\r\n')) warn(f, 'has Windows (CRLF) line endings');
 
 /* ---------------- report ---------------- */

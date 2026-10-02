@@ -1,0 +1,114 @@
+---
+title: "Liu Lab — Decoding Dynamic States of Living Systems"
+description: "Liu Lab at the National Biomedical Imaging Center, Peking University, builds molecular, imaging and computational tools to observe living biology with greater precision."
+heroCss: ".hero { --hero-image: url('/assets/img/hero-microscopy.jpg'); }"
+---
+  <section class="hero">
+    <div class="hero__inner">
+      <h1 class="h-hero">Decoding dynamic states of living systems.</h1>
+      <p class="lead">We build molecular, imaging and computational tools to observe living biology with greater spatial, temporal, molecular and quantitative precision.</p>
+      <div class="btns">
+        <a class="btn btn--primary" href="/research/">Explore research</a>
+        <a class="btn" href="/join-us/">Join the lab</a>
+      </div>
+      <div class="affil">
+        <img class="affil__mark affil__mark--invert" src="/assets/img/pku.png" alt="Peking University" />
+        <img class="affil__mark affil__mark--invert" src="/assets/img/cft.png" alt="College of Future Technology, Peking University" />
+        <img class="affil__mark" src="/assets/img/nbic.png" alt="National Biomedical Imaging Center" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="eyebrow">What we build</p>
+        <h2 class="h-section">Tools for seeing and steering living cells</h2>
+        <p class="lead">We design the proteins, build the microscopes and write the algorithms — so that watching a process and controlling it become the same experiment.</p>
+      </div>
+      <div class="tools">
+
+        <article class="tool">
+          <img class="toolfig" src="/assets/img/tool-biosensor.jpg" alt="A cyan and a yellow fluorescent protein flanking a sensor domain: when the sensor closes, the two fluorophores come together, energy transfers, and the emission spectrum and fluorescence lifetime both shift" loading="lazy" />
+          <div class="tool__body">
+            <p class="tool__tag">See</p>
+            <h3>Biosensors</h3>
+            <p>Engineered proteins that turn a conformational change into a change in fluorescence — read out by FRET, fluorescence lifetime, or single-molecule tracking in living cells.</p>
+          </div>
+        </article>
+
+        <article class="tool">
+          <img class="toolfig" src="/assets/img/tool-optogenetics.jpg" alt="Membrane-anchored proteins under a beam of blue light: the illuminated ones have recruited a partner protein up from the cytoplasm and docked it at the membrane, while those left in the dark remain unbound" loading="lazy" />
+          <div class="tool__body">
+            <p class="tool__tag">Steer</p>
+            <h3>Optogenetics</h3>
+            <p>Light-controlled switches that recruit a protein to a chosen location, or turn its activity on and off — in seconds, and only where we illuminate.</p>
+          </div>
+        </article>
+
+        <article class="tool">
+          <img class="toolfig" src="/assets/img/tool-microscopy.jpg" alt="A microscope light path: laser excitation reflects off a dichroic mirror up through the objective into a dish of living cells; the emission returns to the camera, and the recorded image stack is then segmented, tracked from cell to cell, and reduced to a fluorescence-lifetime decay curve" loading="lazy" />
+          <div class="tool__body">
+            <p class="tool__tag">Observe</p>
+            <h3>Microscopy</h3>
+            <p>Imaging systems built in-house for live, quantitative measurement — single-molecule, light-sheet, fluorescence-lifetime and structured illumination — together with the analysis that turns a recording into numbers.</p>
+          </div>
+        </article>
+
+        <article class="tool">
+          <img class="toolfig" src="/assets/img/tool-protein-design.jpg" alt="A sequence fed through a neural network traces a path down an energy landscape, passing through successive folds to a minimum, and yields a designed protein that is then tested inside a cell" loading="lazy" />
+          <div class="tool__body">
+            <p class="tool__tag">Design</p>
+            <h3>AI-based protein design</h3>
+            <p>Generative models that propose new sensors, actuators and binders — which we then build and test directly in living cells, closing the loop between design and measurement.</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="eyebrow">What we work on</p>
+        <h2 class="h-section">Four questions, one toolkit</h2>
+      </div>
+      <ul class="topics">
+        <li><a href="/research/#immune"><b>Immune cell signalling</b><span>Macrophage podosomes to immune synapses</span></a></li>
+        <li><a href="/research/#neuronal"><b>Neuronal nuclear states</b><span>Activation, phosphorylation and condensates</span></a></li>
+        <li><a href="/research/#mechano"><b>Mechanobiology</b><span>How force becomes molecular signal</span></a></li>
+        <li><a href="/research/#protein"><b>AI-based protein design</b><span>Designed biosensors, actuators and binders</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap recent">
+      <div>
+        <p class="eyebrow">Latest paper</p>
+        {{latestPaper}}
+        <p style="margin-top:22px"><a class="btn" href="/publications/">All publications</a></p>
+      </div>
+      <div>
+        <p class="eyebrow">From the lab</p>
+        {{latestNews}}
+        <p style="margin-top:22px"><a class="btn" href="/news/">More news</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="band">
+        <div>
+          <p class="eyebrow">Join Liu Lab</p>
+          <h2 class="h-section">We welcome curious scientists and tool builders.</h2>
+        </div>
+        <div>
+          <div class="btns"><a class="btn btn--primary" href="/join-us/">Open positions</a></div>
+          <p class="meta" style="margin-top:14px"><a href="mailto:beiliu@pku.edu.cn">beiliu[AT]pku.edu.cn</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
