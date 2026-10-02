@@ -14,6 +14,30 @@ Documents\Cowork\lab page\
 └── member\   ← new-member portraits, named by Chinese name: "马莉雅.jpg"
 ```
 
+## Shortcuts (skills in `.claude/skills/`) — remind Bei every time
+
+| Shortcut | What it does |
+|---|---|
+| `/add-news [note]` | News event from photos in `lab page\news` |
+| `/add-paper <DOI or link>` | Paper from Crossref (`tools/add-paper.mjs`) |
+| `/add-member [note]` | New person, photo from `lab page\member` |
+| `/move-to-alumni <name> [years]` | Team → Alumni |
+| `/site-check` | Build + checks + last deploy + live pages |
+| `/lab-help` | List shortcuts + quick health check |
+
+**Bei asked to be reminded of these.** End every reply that finishes a
+website task (or answers a website question) with this line, verbatim:
+
+> 💡 Shortcuts: `/add-news` · `/add-paper` · `/add-member` · `/move-to-alumni` · `/site-check` · `/lab-help`
+
+When Bei asks in plain words ("add this paper", "new member"), use the
+matching skill's steps anyway. When a new routine task repeats, propose a new
+shortcut and add it to this table, `lab-help`, and HANDOFF.md.
+
+Sessions should start in the **`site`** folder — skills load at start only
+from the session folder. (From `lab page`, they load once a file in `site/`
+is read.)
+
 ## Every update, in order
 
 1. `git pull` first — the live repo may have changed.
@@ -139,7 +163,8 @@ Doing these one at a time, each approved by Bei:
 2. [x] This CLAUDE.md
 3. [x] Pre-publish check script + pre-commit hook + GitHub Action that blocks
        a broken build (2026-10-02)
-4. [ ] Slash commands: `/add-paper <DOI>`, `/add-news`, `/add-member`
+4. [x] Shortcuts: `/add-news`, `/add-paper`, `/add-member`, `/move-to-alumni`,
+       `/site-check`, `/lab-help` (2026-10-02)
 5. [ ] Photo inbox → `processed/` convention
 6. [ ] Content: one consistent research taxonomy across Home/Research/
        Technologies/Join Us; merge Technologies into Research; richer

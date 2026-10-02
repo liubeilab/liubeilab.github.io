@@ -35,6 +35,23 @@ Companion to `README.md`; this file is the practical playbook.
 With Claude Code you can just say what changed ("add this paper", "add a news
 post about X with these photos") and it will do steps 1–3.
 
+### Claude Code shortcuts
+
+Open Claude Code in the **`Documents\Cowork\lab page\site`** folder, then type:
+
+| Shortcut | What it does | Example |
+|---|---|---|
+| `/add-news` | News event from photos in `lab page\news` (named by date) | `/add-news 9.26 lab hike + dinner` |
+| `/add-paper` | Paper from its DOI or link | `/add-paper 10.52601/bpr.2025.250024` |
+| `/add-member` | New person; photo in `lab page\member` (named in Chinese) | `/add-member 曾燕, undergrad, summer 2026` |
+| `/move-to-alumni` | Team → Alumni | `/move-to-alumni Shenyi Lu 2024-2026` |
+| `/site-check` | Health check: checks, last deploy, live pages | `/site-check` |
+| `/lab-help` | Shows this list | `/lab-help` |
+
+Each one follows the same steps every time (draft for approval when needed,
+resize photos, build, check, publish, confirm live). They live in
+`.claude/skills/`; the helper for papers is `tools/add-paper.mjs`.
+
 ## Where content lives
 
 | Content | File | Notes |
