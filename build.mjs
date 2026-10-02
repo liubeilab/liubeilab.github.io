@@ -107,14 +107,13 @@ function markdown(src, { skipImage = '', dropImages = false } = {}) {
 /* ---------------- shell ---------------- */
 
 const NAV = [
-  ['/',              'Home',            'home'],
-  ['/research/',     'Vision/Research', 'research'],
-  ['/technologies/', 'Technologies',    'tech'],
-  ['/open-science/', 'Open Science',    'open'],
-  ['/publications/', 'Publications',    'pubs'],
-  ['/people/',       'People',          'people'],
-  ['/join-us/',      'Join Us',         'join'],
-  ['/news/',         'News',            'news'],
+  ['/',              'Home',         'home'],
+  ['/research/',     'Research',     'research'],
+  ['/publications/', 'Publications', 'pubs'],
+  ['/people/',       'People',       'people'],
+  ['/news/',         'News',         'news'],
+  ['/open-science/', 'Open Science', 'open'],
+  ['/join-us/',      'Join Us',      'join'],
 ];
 
 /* Link previews (WeChat, Slack, email …): every page shares the branded card
@@ -258,7 +257,6 @@ const PAGES = [
   // [pages/ file, nav key, URL path, output file]
   ['home',         'home',     '/',              'index.html'],
   ['research',     'research', '/research/',     'research/index.html'],
-  ['technologies', 'tech',     '/technologies/', 'technologies/index.html'],
   ['open-science', 'open',     '/open-science/', 'open-science/index.html'],
   ['publications', 'pubs',     '/publications/', 'publications/index.html'],
   ['people',       'people',   '/people/',       'people/index.html'],
@@ -368,6 +366,29 @@ for (const p of pages) {
   mkdirSync(dirname(target), { recursive: true });
   writeFileSync(target, shell(p), 'utf8');
   console.log(`  ${p.file.padEnd(40)} ${p.path}`);
+}
+
+/* Retired URLs keep working: each gets a tiny page that forwards to its new
+   home. Technologies was merged into Research on 2026-10-02. */
+const REDIRECTS = [
+  ['technologies/index.html', '/research/#tools'],
+];
+for (const [file, to] of REDIRECTS) {
+  const target = join(OUT, file);
+  mkdirSync(dirname(target), { recursive: true });
+  writeFileSync(target, `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Moved | Liu Lab</title>
+<meta http-equiv="refresh" content="0; url=${to}" />
+<link rel="canonical" href="https://www.liubeilab.com${to}" />
+<meta name="robots" content="noindex" />
+</head>
+<body><p>This page has moved to <a href="${to}">${to}</a>.</p></body>
+</html>
+`, 'utf8');
+  console.log(`  ${file.padEnd(40)} -> ${to}`);
 }
 
 writeFileSync(join(OUT, 'CNAME'), 'www.liubeilab.com\n', 'utf8');

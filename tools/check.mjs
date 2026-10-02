@@ -153,7 +153,7 @@ for (const f of walk('assets/img')) {
   if (kb > 1024) err(f, `${Math.round(kb)} KB — resize with tools/resize-photo.ps1 (aim < 600 KB)`);
   else if (kb > 650) warn(f, `${Math.round(kb)} KB — consider resizing`);
   const name = f.split('/').pop();
-  if (!sources.includes(name)) warn(f, 'not used anywhere — delete it with git rm?');
+  if (!sources.includes(`/${name}`)) warn(f, 'not used anywhere — delete it with git rm?');
 }
 
 /* ---------------- built output ---------------- */
@@ -171,6 +171,7 @@ for (const f of htmlFiles) {
   }
   for (const [img] of html.matchAll(/<img\b[^>]*>/g))
     if (!/\salt="[^"]+"/.test(img)) err(f, `photo without a description (alt): ${img.slice(0, 90)}`);
+  if (html.includes('http-equiv="refresh"')) continue; // forwarding stub for a retired URL
   const og = html.match(/<meta property="og:image" content="https:\/\/www\.liubeilab\.com(\/[^"]+)"/);
   if (!og) err(f, 'no link-preview image (og:image)');
   else if (!exists(siteFile(og[1]))) err(f, `link-preview image not found: ${og[1]}`);
