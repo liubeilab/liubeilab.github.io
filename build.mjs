@@ -102,7 +102,7 @@ const slugify = (s) => String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g, '
 /* Author names shown in bold on Publications. `Liu B` everywhere; add other
    lab members per paper with "labAuthors": ["Wang B", …] in publications.json
    (per paper, because "Li M" is not the same person in every author list).
-   Markers after a name: * co-first, # corresponding. */
+   Markers after a name (shown as superscripts): * co-first, # corresponding. */
 const LAB_AUTHORS = ['Liu B'];
 const authorsHtml = (p) => {
   let html = esc(p.authors);
@@ -110,7 +110,8 @@ const authorsHtml = (p) => {
     const re = new RegExp(`(^|, )(${esc(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?=[*#]*(,|$))`);
     html = html.replace(re, '$1<strong class="pub__lab">$2</strong>');
   }
-  return html;
+  // The * and # after a name are set as superscripts.
+  return html.replace(/([*#]+)(?=,|$)/g, '<sup>$1</sup>');
 };
 
 /* A small Markdown renderer — enough for lab news: paragraphs, headings, lists,

@@ -255,6 +255,7 @@ p { margin: 0; }
 /* ---------- publications ---------- */
 
 .pub-summary { margin-bottom: 30px; }
+.pub-summary sup { line-height: 0; }
 .pub-list { max-width: 1080px; }
 
 /* Grouped by year: with 21 entries a flat list is hard to scan, and the year
@@ -274,6 +275,7 @@ p { margin: 0; }
 }
 .pub-divider::before, .pub-divider::after { content: ''; flex: 1; border-top: 1px dashed var(--line-strong); }
 .pub__lab { color: var(--ink); font-weight: 600; }
+.pub__authors sup { font-size: 0.72em; line-height: 0; margin-left: 1px; }
 .person { scroll-margin-top: 96px; }
 .person:target { border-color: var(--accent); }
 .pub {
