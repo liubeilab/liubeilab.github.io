@@ -87,8 +87,8 @@ is read.)
   Short casual lab-life posts may go straight up if Bei gave the wording.
 - **Dates come from photo filenames** (`2026.9.26 - x.jpg` → `2026-09-26`).
 - **Never guess who is who in photos** — face→name mapping comes from Bei.
-- **Never guess author roles.** If the source doesn't state the corresponding
-  author (`*`) or equal contribution (`#`), add the paper without markers and
+- **Never guess author roles.** If the source doesn't state the co-first
+  authors (`*`) or the corresponding author (`#`), add the paper without markers and
   ask.
 - Site text is **English**. Names in People: `nameEn` "Given Surname" plus
   `nameZh`.
@@ -125,13 +125,22 @@ from the hero image + logo); News uses the newest event's cover.
 **Publications** — `data/publications.json`, newest first; new entry goes on
 top with `idx` = previous max + 1. Fields: `idx, year, title, authors,
 journal, doi, featured`. Authors as `Surname Initials` (`Liu B`), `*` =
-corresponding, `#` = equal contribution, `et al.` for long lists. Journal as
-`Journal Volume(Issue), pages`. Get metadata from Crossref:
+co-first, `#` = corresponding (Bei, 2026-11-17), `et al.` for long lists. Journal as
+`Journal Volume(Issue), pages`. The page is one list, year by year,
+with a dashed "Before independence" line above the 2022 papers (2022 and
+earlier count as before independence)
+(`INDEPENDENT_SINCE` in build.mjs) — no other grouping (Bei, 2026-11-17).
+Optional
+`"labAuthors": ["Wang B"]` bolds lab members besides `Liu B` — per paper,
+and only names confirmed by the article or by Bei. Get metadata from Crossref:
 `https://api.crossref.org/works/<DOI>` (more reliable than scraping the page).
 
 **People** — `data/team.json`: `sortOrder` (gaps of 10), `nameEn`, `nameZh`,
 `role`, `bio`, `photo`. PI is the first entry. Graduates move to
-`data/alumni.json` (with years). The People page shuffles member order per visit.
+`data/alumni.json` (with years). The People page groups members by role
+(`ROLE_ORDER` in build.mjs) and shuffles the order inside each role per visit.
+Each member has a permanent address `/people/#given-surname` (from `nameEn`;
+set `"id"` to override — the build stops on a duplicate).
 
 ## Images
 
@@ -204,3 +213,14 @@ tools/serve.mjs` → http://localhost:4000 (preview_start with that `url`).
        (output byte-identical), alt text everywhere, link-preview card +
        JSON-LD, 21 legacy `a12b36_/556e2a_` images renamed, big photo resized
 8. [ ] Design: an image on the text-only pages; optional light mode
+9. Site refresh (design-system review of 2026-11-14, "Seven ways"):
+   - [x] 2026-11-17: width/height on every `<img>` (written by build.mjs from
+         the file headers) + hero preload; Publications year by year with a
+         dashed "Before independence" line above 2022, `Liu B` bold
+         and markers unified to `*` co-first, `#` corresponding; home label "Selected paper"; member addresses and
+         per-role shuffle; `Person` + `ScholarlyArticle` JSON-LD;
+         `/news/feed.xml`
+   - [ ] Open, ask Bei: lone `*` on MacNevin CJ in #10 (JACS 2016)? #9
+         (Scientific Reports 2015) carries a Biophysical Journal DOI
+   - [ ] Open: Scholar/ORCID links, other lab authors in bold, responsive
+         image sizes (srcset), alumni destinations, Chinese Join Us, light mode

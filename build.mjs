@@ -61,6 +61,58 @@ const formatDate = (d) => {
     : dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
+/* Pixel size of a local JPEG/PNG, read from the file header (no dependencies).
+   Every <img> gets width/height so the browser reserves its space before the
+   photo arrives — otherwise the page jumps as images load. */
+const sizeCache = new Map();
+function imageSize(src) {
+  if (sizeCache.has(src)) return sizeCache.get(src);
+  let size = null;
+  try {
+    const b = readFileSync(join(OUT, decodeURI(src.replace(/[?#].*$/, '')).replace(/^\//, '')));
+    if (b.readUInt32BE(0) === 0x89504E47) size = [b.readUInt32BE(16), b.readUInt32BE(20)];
+    else if (b.readUInt16BE(0) === 0xFFD8) {
+      for (let i = 2; i + 9 < b.length;) {
+        if (b[i] !== 0xFF) { i++; continue; }
+        const marker = b[i + 1];
+        if (marker === 0xFF) { i++; continue; }
+        // SOF0–SOF15 carry the frame size (C4, C8, CC are not frame headers)
+        if (marker >= 0xC0 && marker <= 0xCF && ![0xC4, 0xC8, 0xCC].includes(marker)) {
+          size = [b.readUInt16BE(i + 7), b.readUInt16BE(i + 5)];
+          break;
+        }
+        i += 2 + b.readUInt16BE(i + 2);
+      }
+    }
+  } catch { /* missing file: tools/check.mjs reports it */ }
+  sizeCache.set(src, size);
+  return size;
+}
+const withImageSizes = (html) => html.replace(/<img\b[^>]*>/g, (tag) => {
+  if (/\swidth=/.test(tag)) return tag;
+  const src = tag.match(/\ssrc="(\/[^"]+)"/)?.[1];
+  const size = src && imageSize(src);
+  return size ? tag.replace(/\s*\/?>$/, ` width="${size[0]}" height="${size[1]}" />`) : tag;
+});
+
+/* "Yingying He" → "yingying-he": the stable address of a person on /people/. */
+const slugify = (s) => String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+/* Author names shown in bold on Publications. `Liu B` everywhere; add other
+   lab members per paper with "labAuthors": ["Wang B", …] in publications.json
+   (per paper, because "Li M" is not the same person in every author list).
+   Markers after a name: * co-first, # corresponding. */
+const LAB_AUTHORS = ['Liu B'];
+const authorsHtml = (p) => {
+  let html = esc(p.authors);
+  for (const name of [...LAB_AUTHORS, ...(p.labAuthors || [])]) {
+    const re = new RegExp(`(^|, )(${esc(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?=[*#]*(,|$))`);
+    html = html.replace(re, '$1<strong class="pub__lab">$2</strong>');
+  }
+  return html;
+};
+
 /* A small Markdown renderer — enough for lab news: paragraphs, headings, lists,
    blockquotes, rules, images (single and galleries), links, bold, italic, code.
    Text is HTML-escaped first, so post content cannot inject markup. */
@@ -130,7 +182,10 @@ const ORG_JSONLD = JSON.stringify({
   sameAs: ['https://github.com/liubeilab'],
 });
 
-const shell = ({ key, path, title, desc, body, heroCss = '', image = SHARE_CARD }) => `<!doctype html>
+const SITE = 'https://www.liubeilab.com';
+const jsonLd = (obj) => `\n<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
+
+const shell = ({ key, path, title, desc, body, heroCss = '', image = SHARE_CARD, extraHead = '' }) => withImageSizes(`<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -148,12 +203,13 @@ const shell = ({ key, path, title, desc, body, heroCss = '', image = SHARE_CARD 
 <meta property="og:image:height" content="630" />` : ''}
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://www.liubeilab.com${esc(image)}" />${key === 'home' ? `
-<script type="application/ld+json">${ORG_JSONLD}</script>` : ''}
+<script type="application/ld+json">${ORG_JSONLD}</script>` : ''}${extraHead}
+<link rel="alternate" type="application/rss+xml" title="Liu Lab news" href="/news/feed.xml" />
 <link rel="icon" href="/assets/img/mark.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/assets/styles.css" />${heroCss ? `\n<style>${heroCss}</style>` : ''}
+<link rel="stylesheet" href="/assets/styles.css" />${heroCss ? `\n<style>${heroCss}</style>` : ''}${/url\('([^']+)'\)/.test(heroCss) ? `\n<link rel="preload" as="image" href="${heroCss.match(/url\('([^']+)'\)/)[1]}" fetchpriority="high" />` : ''}
 </head>
 <body>
 
@@ -196,7 +252,7 @@ ${body}
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f6f9efe816f1451490ace5de63fc749a"}'></script>
 </body>
 </html>
-`;
+`);
 
 /* ---------------- reusable fragments ---------------- */
 
@@ -205,7 +261,7 @@ const pubEntry = (p) => `
     <div class="pub__n">${esc(p.idx)}</div>
     <div>
       <h3 class="pub__title">${esc(p.title)}</h3>
-      <p class="pub__authors">${esc(p.authors)}</p>
+      <p class="pub__authors">${authorsHtml(p)}</p>
       <p class="pub__journal">${esc(p.journal)}</p>
       ${p.doi ? `<a class="pub__doi" href="https://doi.org/${esc(p.doi)}" target="_blank" rel="noopener">${esc(p.doi)}</a>` : ''}
     </div>
@@ -274,20 +330,51 @@ const resourceGroups = (() => {
 })();
 
 const pubYears = publications.map((p) => Number(p.year)).filter(Boolean);
-const pubGroups = [];
-for (const p of publications) {
-  const last = pubGroups[pubGroups.length - 1];
-  if (last && last.year === p.year) last.items.push(p);
-  else pubGroups.push({ year: p.year, items: [p] });
-}
+const byYear = (list) => {
+  const groups = [];
+  for (const p of list) {
+    const last = groups[groups.length - 1];
+    if (last && last.year === p.year) last.items.push(p);
+    else groups.push({ year: p.year, items: [p] });
+  }
+  return groups;
+};
+/* One list, year by year. A dashed line marks where the lab began: papers
+   below it are from before Bei's independence. The two 2022 papers are
+   postdoc-era work too (Bei, 2026-11-17), so the line sits above 2022. */
+const INDEPENDENT_SINCE = 2023;
+const pubYearGroups = byYear(publications);
+const firstEarlier = pubYearGroups.findIndex((g) => g.year < INDEPENDENT_SINCE);
+const yearSections = pubYearGroups.map((g, i) => `${i === firstEarlier && i > 0 ? `
+        <p class="pub-divider" id="before-independence"><span>Before independence</span></p>` : ''}
+        <section class="pub-year">
+          <h2 class="pub-year__label">${esc(g.year)}</h2>
+          ${g.items.map(pubEntry).join('')}
+        </section>`).join('');
 
 const pi = team[0];
-const members = team.slice(1);
+/* Members keep one address each (/people/#given-surname) and are grouped by
+   role; assets/people.js shuffles the order inside each role, per visit. */
+const ROLE_ORDER = ['Lab Manager', 'Postdoc', 'Research Assistant', 'PhD Student', "Master's Student", 'Undergraduate'];
+const roleRank = (role) => {
+  const i = ROLE_ORDER.findIndex((r) => String(role).toLowerCase().startsWith(r.toLowerCase()));
+  return i === -1 ? ROLE_ORDER.length : i;
+};
+const members = team.slice(1)
+  .map((m) => ({ ...m, id: m.id || slugify(m.nameEn), group: roleRank(m.role) }))
+  .sort((a, b) => a.group - b.group || a.sortOrder - b.sortOrder);
+{
+  const ids = new Set();
+  for (const m of members) {
+    if (!m.id || ids.has(m.id)) throw new Error(`data/team.json: "${m.nameEn}" needs its own "id" (address "${m.id}" is empty or already taken)`);
+    ids.add(m.id);
+  }
+}
 
 const slots = {
   /* Home: latest featured paper and newest news post */
   latestPaper: latestPub ? `<h3 class="pub__title" style="font-size:1.34rem">${esc(latestPub.title)}</h3>
-        <p class="pub__authors" style="margin-top:8px">${esc(latestPub.authors)}</p>
+        <p class="pub__authors" style="margin-top:8px">${authorsHtml(latestPub)}</p>
         <p class="pub__journal">${esc(latestPub.journal)}</p>
         ${latestPub.doi ? `<a class="pub__doi" href="https://doi.org/${esc(latestPub.doi)}" target="_blank" rel="noopener">${esc(latestPub.doi)}</a>` : ''}` : '',
   latestNews: latestPost ? `<p class="meta">${esc(formatDate(latestPost.date))}</p>
@@ -306,11 +393,7 @@ const slots = {
   pubCount: publications.length,
   pubFirstYear: Math.min(...pubYears),
   pubLastYear: Math.max(...pubYears),
-  publications: pubGroups.map((g) => `
-        <section class="pub-year">
-          <h2 class="pub-year__label">${esc(g.year)}</h2>
-          ${g.items.map(pubEntry).join('')}
-        </section>`).join(''),
+  publications: yearSections,
 
   /* People: PI block, member cards (shuffled client-side), alumni */
   pi: `<div class="pi">
@@ -324,7 +407,7 @@ const slots = {
         </div>
       </div>`,
   members: members.map((m) => `
-        <article class="person">
+        <article class="person" id="${esc(m.id)}" data-group="${m.group}">
           <img src="${esc(m.photo)}" alt="${esc(m.nameEn)}" loading="lazy" />
           <div class="person__body">
             <h3 class="person__name">${esc(m.nameZh)}</h3>
@@ -358,6 +441,37 @@ const pages = PAGES.map(([name, key, path, file]) => ({ key, path, file, ...load
 // A shared News link previews the newest event's photo.
 const newsPage = pages.find((p) => p.key === 'news');
 if (latestPost?.cover) newsPage.image = latestPost.cover;
+
+/* Structured data, so search engines read the PI as a person and each paper as
+   the same work its DOI points to. */
+pages.find((p) => p.key === 'people').extraHead = jsonLd({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: pi.nameEn,
+  alternateName: pi.nameZh,
+  jobTitle: 'Assistant Professor',
+  email: 'beiliu@pku.edu.cn',
+  url: `${SITE}/people/`,
+  image: `${SITE}${pi.photo}`,
+  affiliation: { '@type': 'CollegeOrUniversity', name: 'Peking University' },
+  worksFor: { '@type': 'ResearchOrganization', name: 'Liu Lab', url: `${SITE}/` },
+});
+pages.find((p) => p.key === 'pubs').extraHead = jsonLd({
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Liu Lab publications',
+  numberOfItems: publications.length,
+  itemListElement: publications.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'ScholarlyArticle',
+      headline: p.title,
+      datePublished: String(p.year),
+      ...(p.doi ? { identifier: { '@type': 'PropertyValue', propertyID: 'DOI', value: p.doi }, sameAs: `https://doi.org/${p.doi}` } : {}),
+    },
+  })),
+});
 
 /* ---------------- emit ---------------- */
 
@@ -394,7 +508,30 @@ for (const [file, to] of REDIRECTS) {
 writeFileSync(join(OUT, 'CNAME'), 'www.liubeilab.com\n', 'utf8');
 writeFileSync(join(OUT, '.nojekyll'), '', 'utf8');
 
-const SITE = 'https://www.liubeilab.com';
+/* News feed: the posts have no pages of their own, so every item links to the
+   timeline and carries its full text. Dates are fixed (noon Beijing time on
+   the post's day), so rebuilding never changes the file by itself. */
+const rfc822 = (d) => new Date(`${d}T12:00:00+08:00`).toUTCString();
+const feedItems = posts.filter((p) => /^\d{4}-\d{2}-\d{2}$/.test(p.date)).slice(0, 30);
+writeFileSync(join(OUT, 'news/feed.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>Liu Lab news</title>
+<link>${SITE}/news/</link>
+<atom:link href="${SITE}/news/feed.xml" rel="self" type="application/rss+xml" />
+<description>News from Liu Lab at Peking University.</description>
+<language>en</language>${feedItems.length ? `\n<lastBuildDate>${rfc822(feedItems[0].date)}</lastBuildDate>` : ''}
+${feedItems.map((p) => `<item>
+<title>${esc(p.title)}</title>
+<link>${SITE}/news/</link>
+<guid isPermaLink="false">liubeilab-news-${esc(p.slug)}</guid>
+<pubDate>${rfc822(p.date)}</pubDate>
+<description>${esc(markdown(p.body, { dropImages: true }) || p.excerpt)}</description>
+</item>`).join('\n')}
+</channel>
+</rss>
+`, 'utf8');
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${pages.map((p) => `  <url><loc>${SITE}${p.path}</loc><changefreq>${p.path === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${p.path === '/' ? '1.0' : '0.7'}</priority></url>`).join('\n')}

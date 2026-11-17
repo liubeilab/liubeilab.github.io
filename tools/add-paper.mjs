@@ -2,7 +2,7 @@
    entry in the site's style.
      node tools/add-paper.mjs 10.52601/bpr.2025.250024          # preview only
      node tools/add-paper.mjs 10.52601/bpr.2025.250024 --write  # add on top
-   Author markers (* corresponding, # equal contribution) are NOT added — the
+   Author markers (* co-first, # corresponding) are NOT added — the
    Crossref record doesn't carry them; ask Bei and edit by hand.
    Node 18+. No dependencies. */
 

@@ -16,8 +16,8 @@ Input: $ARGUMENTS (a DOI, a doi.org link, or a journal article URL).
    - If it says "Liu B" isn't an author, stop and ask Bei.
    - If Crossref has no record, fetch the article page and fill the entry by
      hand in the same format.
-4. **Author markers:** Crossref doesn't record corresponding (`*`) or equal
-   contribution (`#`). Check the article page; if it states them, add them.
+4. **Author markers:** Crossref doesn't record co-first (`*`) or
+   corresponding (`#`) authors. Check the article page; if it states them, add them.
    If not stated, add without markers and **ask Bei** in the final message.
    Never guess.
 5. Write it: `node tools/add-paper.mjs <DOI> --write`, then hand-edit markers

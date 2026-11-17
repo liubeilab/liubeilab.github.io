@@ -3,7 +3,8 @@
     "idx": 22,
     "year": 2026,
     "title": "Emerging trends of fluorescence lifetime imaging microscopy (FLIM): advances, challenges, and prospects",
-    "authors": "Wang B, Li M, Huang X, Liu B",
+    "authors": "Wang B, Li M, Huang X, Liu B#",
+    "labAuthors": ["Wang B", "Li M"],
     "journal": "Biophysics Reports 12(4), 225-239",
     "doi": "10.52601/bpr.2025.250024",
     "featured": false
@@ -12,7 +13,7 @@
     "idx": 21,
     "year": 2025,
     "title": "Combined learning for augmented super-resolution imaging",
-    "authors": "Ren C, Pan T, Yang T, Yin N, Gu L, Liu B, Ji W",
+    "authors": "Ren C, Pan T, Yang T, Yin N, Gu L, Liu B#, Ji W#",
     "journal": "Optics & Laser Technology 192, 113943",
     "doi": "10.1016/j.optlastec.2025.113943",
     "featured": false
@@ -21,7 +22,7 @@
     "idx": 20,
     "year": 2024,
     "title": "Live-cell biosensors based on the fluorescence lifetime of environment-sensing dyes",
-    "authors": "Mehl BP, Vairaprakash P, Li L, Hinde E, MacNevin CJ, Hsu CW, Gratton E, Liu B*, Hahn KM*",
+    "authors": "Mehl BP, Vairaprakash P, Li L, Hinde E, MacNevin CJ, Hsu CW, Gratton E, Liu B#, Hahn KM#",
     "journal": "Cell Reports Methods 4, 100734",
     "doi": "10.1016/j.crmeth.2024.100734",
     "featured": true
@@ -76,7 +77,7 @@
     "year": 2020,
     "title": "Deep learning enables structured illumination microscopy with low light levels and enhanced speed",
     "authors": "Jin L*, Liu B*#, Zhao F, et al.",
-    "journal": "Nature Communications 11, 1934 (co-first, co-corresponding)",
+    "journal": "Nature Communications 11, 1934",
     "doi": "10.1038/s41467-020-15784-x",
     "featured": true
   },
@@ -94,7 +95,7 @@
     "year": 2019,
     "title": "Optogenetic control of cofilin and αTAT in living cells using Z-lock",
     "authors": "Stone O*, Kaul N*, Liu B*, et al.",
-    "journal": "Nature Chemical Biology 15, 1183-1190 (co-first)",
+    "journal": "Nature Chemical Biology 15, 1183-1190",
     "doi": "10.1038/s41589-019-0405-4",
     "featured": false
   },
@@ -113,7 +114,7 @@
     "title": "Ratiometric Imaging Using a Single Dye Enables Simultaneous Visualization of Rac1 and Cdc42 Activation",
     "authors": "MacNevin CJ*, Toutchkine A, Marston DJ, Hsu CW, Tsygankov D, Li L, Liu B, Qi T, Nguyen DV, Hahn KM",
     "journal": "Journal of the American Chemical Society 138, 2571-2575",
-    "doi": "10.1021/jacs.5b09764.s001",
+    "doi": "10.1021/jacs.5b09764",
     "featured": false
   },
   {

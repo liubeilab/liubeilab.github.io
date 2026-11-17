@@ -1,4 +1,5 @@
-/* People page: shuffle the member cards (fresh order each visit) and lay them
+/* People page: shuffle the member cards within each role (fresh order each
+   visit) and lay them
    out as balanced flex columns. Using real columns instead of CSS `columns`
    avoids the multi-column repaint glitch that duplicated/dropped cards on
    scroll. No-op on pages without a .people grid; degrades to the CSS grid
@@ -9,11 +10,24 @@
   var cards = Array.prototype.slice.call(grid.querySelectorAll('.person'));
   if (cards.length < 2) return;
 
-  // Fisher–Yates shuffle, once per page load.
-  for (var i = cards.length - 1; i > 0; i--) {
-    var j = (Math.random() * (i + 1)) | 0;
-    var tmp = cards[i]; cards[i] = cards[j]; cards[j] = tmp;
+  // Fisher–Yates shuffle, once per page load — inside each role group only
+  // (data-group, set by build.mjs), so roles stay together and nobody is
+  // always first within theirs.
+  function shuffle(list) {
+    for (var i = list.length - 1; i > 0; i--) {
+      var j = (Math.random() * (i + 1)) | 0;
+      var tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+    }
+    return list;
   }
+  var groups = {}, order = [];
+  cards.forEach(function (card) {
+    var g = card.getAttribute('data-group') || '0';
+    if (!groups[g]) { groups[g] = []; order.push(g); }
+    groups[g].push(card);
+  });
+  cards = [];
+  order.forEach(function (g) { cards = cards.concat(shuffle(groups[g])); });
 
   grid.classList.add('people--js');
   var laidFor = -1;
@@ -46,6 +60,12 @@
   }
 
   layout();
+  // A link to one person (/people/#given-surname) still lands on them after
+  // the cards have been moved into columns.
+  if (location.hash.length > 1) {
+    var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (target && grid.contains(target)) target.scrollIntoView();
+  }
   var t;
   window.addEventListener('resize', function () {
     clearTimeout(t);
