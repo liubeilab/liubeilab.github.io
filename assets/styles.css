@@ -207,6 +207,14 @@ p { margin: 0; }
 /* The content sits inside .wrap, so a direct-child selector here matched
    nothing and every subpage title ran straight into its lead paragraph. */
 .page-hero .wrap > * + * { margin-top: 20px; }
+.lang-switch a { color: var(--accent); }
+.lang-switch [aria-current] { color: var(--ink); }
+/* Chinese pages: Spectral and Libre Franklin have no Chinese glyphs, so name
+   the system Chinese fonts; no italics (Chinese has none) and no wide tracking. */
+:lang(zh-CN) { --display: 'Spectral', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  --sans: 'Libre Franklin', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif; }
+html:lang(zh-CN) main em { font-style: normal; color: var(--ink); }
+html:lang(zh-CN) main .eyebrow { letter-spacing: 0.08em; }
 
 /* ---------- buttons ---------- */
 
@@ -332,6 +340,7 @@ p { margin: 0; }
 .alumnus { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 18px; align-items: center; padding: 18px; background: var(--panel-3); }
 .alumnus img { width: 84px; height: 84px; object-fit: cover; border: 1px solid var(--line); }
 .alumnus b { font-family: var(--display); font-size: 1.05rem; font-weight: 400; display: block; }
+.alumnus__en { display: block; font-family: var(--mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.03em; margin: 2px 0 4px; }
 
 /* ---------- news ---------- */
 

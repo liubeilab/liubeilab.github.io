@@ -90,7 +90,9 @@ is read.)
 - **Never guess author roles.** If the source doesn't state the co-first
   authors (`*`) or the corresponding author (`#`), add the paper without markers and
   ask.
-- Site text is **English**. Names in People: `nameEn` "Given Surname" plus
+- Site text is **English**, except the Chinese Join Us page
+  (`pages/join-us-zh.html` → `/join-us/zh/`, `lang: zh-CN` in front matter).
+  **When Join Us wording changes, change both files.** Names in People: `nameEn` "Given Surname" plus
   `nameZh`.
 - Photos are shown **whole, never cropped** (People and News).
 
@@ -148,6 +150,11 @@ set `"id"` to override — the build stops on a duplicate).
   JPEG q85, honors EXIF rotation). Portraits ~900×1200, alumni ~400 px.
 - Name files by slug: `lab-hike-2026-a.jpg`, `-b`, `-c` …
 - When replacing a photo, `git rm` the old file — no orphans.
+- **Small copies for phones:** `assets/img/r/…-480.webp` / `-900.webp`, made by
+  `tools/make-variants.py` (Python + Pillow — not on the office PC, so run it
+  in a Claude cloud session after adding photos, then commit `assets/img/r`).
+  build.mjs puts whatever copies exist into `srcset`; a photo without copies
+  still works, it is just served full size. The lightbox opens the original.
 
 ## Machine facts (Windows)
 
@@ -222,5 +229,7 @@ tools/serve.mjs` → http://localhost:4000 (preview_start with that `url`).
          `/news/feed.xml`
    - [ ] Open, ask Bei: lone `*` on MacNevin CJ in #10 (JACS 2016)? #9
          (Scientific Reports 2015) carries a Biophysical Journal DOI
-   - [ ] Open: Scholar/ORCID links, other lab authors in bold, responsive
-         image sizes (srcset), alumni destinations, Chinese Join Us, light mode
+   - [x] 2026-11-17: phone-size photo copies (srcset), Chinese Join Us with
+         EN · 中文 switch, alumni English names
+   - [ ] Open: Scholar/ORCID links, PI profile, alumni destinations, visitor
+         titles in News, Open Science releases, light mode

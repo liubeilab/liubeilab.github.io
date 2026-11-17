@@ -153,6 +153,12 @@ for (const f of walk('assets/img')) {
   if (kb > 1024) err(f, `${Math.round(kb)} KB — resize with tools/resize-photo.ps1 (aim < 600 KB)`);
   else if (kb > 650) warn(f, `${Math.round(kb)} KB — consider resizing`);
   const name = f.split('/').pop();
+  // Small WebP copies (tools/make-variants.py): fine as long as their original is still there.
+  const copy = f.match(/^assets\/img\/r\/(.+)-\d+\.webp$/);
+  if (copy) {
+    if (!existsSync(join(ROOT, `assets/img/${copy[1]}.jpg`))) warn(f, 'its original photo is gone — delete it with git rm');
+    continue;
+  }
   if (!sources.includes(`/${name}`)) warn(f, 'not used anywhere — delete it with git rm?');
 }
 

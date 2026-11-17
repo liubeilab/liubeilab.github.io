@@ -30,7 +30,7 @@
 
   imgs.forEach(function (im) {
     im.style.cursor = 'zoom-in';
-    im.addEventListener('click', function () { open(im.currentSrc || im.src); });
+    im.addEventListener('click', function () { open(im.src); /* the full-size original, not the small srcset copy */ });
   });
   closeBtn.addEventListener('click', close);
   ov.addEventListener('click', function (e) { if (e.target === ov) close(); });

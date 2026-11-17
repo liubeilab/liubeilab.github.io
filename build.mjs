@@ -4,7 +4,7 @@
    markup and each route keeps its own URL. Run: node build.mjs
    Requires Node 18+. No dependencies. */
 
-import { writeFileSync, mkdirSync, readFileSync, readdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, readFileSync, readdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -88,11 +88,29 @@ function imageSize(src) {
   sizeCache.set(src, size);
   return size;
 }
+/* Smaller WebP copies of a photo, if tools/make-variants.py has made them
+   (assets/img/r/…-480.webp, -900.webp). They go in srcset so a phone downloads
+   a 480 px file instead of the 1600 px original; a photo with no copies is
+   simply served as before. `sizes` tells the browser how wide the photo is
+   shown: news photos up to ~600 px (hover zoom included), portraits ~380 px. */
+const VARIANT_WIDTHS = [480, 900];
+const srcsetFor = (src, fullWidth) => {
+  const m = src.match(/^\/assets\/img\/(.+)\.jpe?g$/i);
+  if (!m) return '';
+  const found = VARIANT_WIDTHS
+    .map((w) => [`/assets/img/r/${m[1]}-${w}.webp`, w])
+    .filter(([file]) => existsSync(join(OUT, file.slice(1))));
+  if (!found.length) return '';
+  const sizes = /\/img\/people\//.test(src) ? '(max-width: 720px) 92vw, 380px'
+    : /cell-multiplexing/.test(src) ? '100vw'
+    : '(max-width: 720px) 92vw, 600px';
+  return ` srcset="${[...found, [src, fullWidth]].map(([f, w]) => `${f} ${w}w`).join(', ')}" sizes="${sizes}"`;
+};
 const withImageSizes = (html) => html.replace(/<img\b[^>]*>/g, (tag) => {
   if (/\swidth=/.test(tag)) return tag;
   const src = tag.match(/\ssrc="(\/[^"]+)"/)?.[1];
   const size = src && imageSize(src);
-  return size ? tag.replace(/\s*\/?>$/, ` width="${size[0]}" height="${size[1]}" />`) : tag;
+  return size ? tag.replace(/\s*\/?>$/, `${srcsetFor(src, size[0])} width="${size[0]}" height="${size[1]}" />`) : tag;
 });
 
 /* "Yingying He" → "yingying-he": the stable address of a person on /people/. */
@@ -186,8 +204,8 @@ const ORG_JSONLD = JSON.stringify({
 const SITE = 'https://www.liubeilab.com';
 const jsonLd = (obj) => `\n<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
 
-const shell = ({ key, path, title, desc, body, heroCss = '', image = SHARE_CARD, extraHead = '' }) => withImageSizes(`<!doctype html>
-<html lang="en">
+const shell = ({ key, path, title, desc, body, heroCss = '', image = SHARE_CARD, extraHead = '', lang = 'en' }) => withImageSizes(`<!doctype html>
+<html lang="${lang}">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -318,6 +336,7 @@ const PAGES = [
   ['publications', 'pubs',     '/publications/', 'publications/index.html'],
   ['people',       'people',   '/people/',       'people/index.html'],
   ['join-us',      'join',     '/join-us/',      'join-us/index.html'],
+  ['join-us-zh',   'join',     '/join-us/zh/',   'join-us/zh/index.html'],   // Chinese version (lang: zh-CN)
   ['news',         'news',     '/news/',         'news/index.html'],
 ];
 
@@ -420,7 +439,7 @@ const slots = {
   alumni: alumni.map((a) => `
         <article class="alumnus">
           <img src="${esc(a.photo)}" alt="${esc(a.nameEn || a.nameZh)}" loading="lazy" />
-          <div><b>${esc(a.nameZh || a.nameEn)}</b><span class="meta">${esc(a.years)}</span></div>
+          <div><b>${esc(a.nameZh || a.nameEn)}</b>${a.nameZh && a.nameEn ? `<span class="alumnus__en">${esc(a.nameEn)}</span>` : ''}<span class="meta">${esc(a.years)}</span></div>
         </article>`).join(''),
 
   /* News: the whole timeline */
@@ -435,13 +454,23 @@ function loadPage(name) {
     if (!(k in slots)) throw new Error(`${file}: unknown slot ${m}`);
     return String(slots[k]);
   });
-  return { title: meta.title, desc: meta.description, heroCss: meta.heroCss || '', body: `\n${html}` };
+  return { title: meta.title, desc: meta.description, heroCss: meta.heroCss || '', lang: meta.lang || 'en', body: `\n${html}` };
 }
 
 const pages = PAGES.map(([name, key, path, file]) => ({ key, path, file, ...loadPage(name) }));
 // A shared News link previews the newest event's photo.
 const newsPage = pages.find((p) => p.key === 'news');
 if (latestPost?.cover) newsPage.image = latestPost.cover;
+
+/* Join Us exists in English and Chinese: tell search engines they are the
+   same page in two languages. */
+{
+  const alternates = `
+<link rel="alternate" hreflang="en" href="${SITE}/join-us/" />
+<link rel="alternate" hreflang="zh-CN" href="${SITE}/join-us/zh/" />
+<link rel="alternate" hreflang="x-default" href="${SITE}/join-us/" />`;
+  for (const p of pages) if (p.key === 'join') p.extraHead = alternates;
+}
 
 /* Structured data, so search engines read the PI as a person and each paper as
    the same work its DOI points to. */
